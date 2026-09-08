@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AG Check-In System</title>
+
+  <style>
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-Light.ttf') format('truetype');
+      font-weight: 300; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-Regular.ttf') format('truetype');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-Medium.ttf') format('truetype');
+      font-weight: 500; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-SemiBold.ttf') format('truetype');
+      font-weight: 600; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-Bold.ttf') format('truetype');
+      font-weight: 700; font-style: normal; font-display: swap;
+    }
+
+    :root {
+      --page-bg: #000000;
+      --page-bg-end: #000000;
+      --page-bg-accent: rgba(255, 212, 0, 0.10);
+      --sidebar-bg: #000000;
+      --main-bg: #000000;
+      --border: #222222;
+      --panel: #111111;
+      --text: #ffd400;
+      --title: #ffffff;
+      --link: #ffd400;
+      --link-hover-bg: #1a1a1a;
+      --main-heading: #ffffff;
+      --toggle-bg: rgba(255, 255, 255, 0.08);
+      --toggle-border: rgba(255, 255, 255, 0.14);
+      --toggle-text: #ffffff;
+      --toggle-shadow: rgba(0, 0, 0, 0.22);
+    }
+
+    body[data-theme='light'] {
+      --page-bg: #f7f7f4;
+      --page-bg-end: #ffffff;
+      --page-bg-accent: rgba(255, 212, 0, 0.16);
+      --sidebar-bg: #ffffff;
+      --main-bg: #ffffff;
+      --border: #d8d5cb;
+      --panel: #eceae4;
+      --text: #111111;
+      --title: #111111;
+      --link: #111111;
+      --link-hover-bg: rgba(0, 0, 0, 0.05);
+      --main-heading: #111111;
+      --toggle-bg: #fdfcf8;
+      --toggle-border: rgba(0, 0, 0, 0.12);
+      --toggle-text: #111111;
+      --toggle-shadow: rgba(0, 0, 0, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Rajdhani', Arial, sans-serif;
+      font-weight: 400;
+      display: flex;
+      background:
+        radial-gradient(circle at top, var(--page-bg-accent), transparent 35%),
+        linear-gradient(180deg, var(--page-bg) 0%, var(--page-bg-end) 100%);
+      color: var(--text);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px; right: 16px;
+      z-index: 20;
+      width: 48px; height: 48px;
+      border-radius: 999px;
+      border: 1px solid var(--toggle-border);
+      background: var(--toggle-bg);
+      color: var(--toggle-text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 12px 28px var(--toggle-shadow);
+      backdrop-filter: blur(10px);
+    }
+    .theme-toggle svg { width: 22px; height: 22px; fill: currentColor; }
+    .theme-toggle .sun-icon, .theme-toggle .moon-icon { display: none; }
+    body[data-theme='dark'] .theme-toggle .sun-icon { display: block; }
+    body[data-theme='light'] .theme-toggle .moon-icon { display: block; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      background: var(--sidebar-bg);
+      padding: 20px;
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+    }
+
+    .logo { width: 100%; margin-bottom: 20px; }
+
+    .title {
+      font-size: 18px;
+      margin-bottom: 16px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--title);
+    }
+
+    /* Assessment link — sits above month list */
+    .assessment-link-wrap {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .assessment-link {
+      display: block;
+      padding: 8px 10px;
+      text-decoration: none;
+      color: #000000;
+      font-size: 13px;
+      font-weight: 600;
+      background: #ffd400;
+      border: 1px solid #ffd400;
+      border-radius: 6px;
+      transition: 0.2s;
+      margin-bottom: 8px;
+    }
+    .assessment-link:last-child { margin-bottom: 0; }
+    .assessment-link:hover { background: #e6bf00; border-color: #e6bf00; transform: translateX(2px); }
+
+    body[data-theme='light'] .assessment-link { color: #000000; }
+
+    .month { margin-bottom: 15px; }
+
+    .month h3 {
+      margin: 10px 0 5px;
+      font-size: 13px;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .week a {
+      display: block;
+      padding: 8px 10px;
+      margin: 4px 0;
+      text-decoration: none;
+      color: var(--link);
+      font-size: 13px;
+      font-weight: 400;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+    .week a:hover {
+      background: var(--link-hover-bg);
+      border-color: var(--text);
+      transform: translateX(2px);
+    }
+
+    /* MAIN AREA */
+    .main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      flex-direction: column;
+      padding: 312px 20px 20px;
+      background: var(--main-bg);
+    }
+    .main h1 {
+      font-size: 34px;
+      margin-bottom: 10px;
+      color: var(--main-heading);
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .main p {
+      color: var(--text);
+      font-size: 14px;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    .mobile-intro {
+      display: none;
+      text-align: center;
+      margin: 0 0 20px;
+    }
+    .mobile-intro h1 {
+      font-size: 34px;
+      margin: 0 0 10px;
+      color: var(--main-heading);
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .mobile-intro p {
+      color: var(--text);
+      font-size: 14px;
+      margin: 0;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    @media (max-width: 720px) {
+      body { flex-direction: column; }
+      .main { display: none; }
+      .sidebar { width: 100%; height: auto; }
+      .mobile-intro { display: block; }
+    }
+  </style>
+</head>
+
+<body>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light mode" title="Toggle light mode">
+    <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5" fill="currentColor"/>
+      <line x1="12" y1="2.5" x2="12" y2="5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="12" y1="18.8" x2="12" y2="21.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="2.5" y1="12" x2="5.2" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="18.8" y1="12" x2="21.5" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="5.2" y1="5.2" x2="7.1" y2="7.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="16.9" y1="16.9" x2="18.8" y2="18.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="5.2" y1="18.8" x2="7.1" y2="16.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="16.9" y1="7.1" x2="18.8" y2="5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M21 14.2A9 9 0 0 1 9.8 3a1 1 0 0 0-1.2 1.2A8 8 0 1 0 19.8 15.4a1 1 0 0 0 1.2-1.2Z"/>
+    </svg>
+  </button>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <img src="assets/images/ag-logo.png" alt="AG Logo" class="logo">
+
+    <div class="mobile-intro">
+      <h1>AG Check-In System</h1>
+      <p>Select your week from the sidebar to begin your check-in</p>
+    </div>
+
+    <div class="title">Check-In System</div>
+
+    <div class="month">
+      <h3>January</h3>
+      <div class="week">
+        <a href="january-week1.html">Week 1</a>
+        <a href="january-week2.html">Week 2</a>
+        <a href="january-week3.html">Week 3</a>
+        <a href="january-week4.html">Week 4</a>
+      </div>
+    </div>
+
+    <div class="month">
+      <h3>February</h3>
+      <div class="week">
+        <a href="february-week1.html">Week 1</a>
+        <a href="february-week2.html">Week 2</a>
+        <a href="february-week3.html">Week 3</a>
+        <a href="february-week4.html">Week 4</a>
+      </div>
+    </div>
+
+    <div class="month">
+      <h3>March</h3>
+      <div class="week">
+        <a href="march-week1.html">Week 1</a>
+        <a href="march-week2.html">Week 2</a>
+        <a href="march-week3.html">Week 3</a>
+        <a href="march-week4.html">Week 4</a>
+      </div>
+    </div>
+
+    <div class="month">
+      <h3>April</h3>
+      <div class="week">
+        <a href="april-week1.html">Week 1</a>
+        <a href="april-week2.html">Week 2</a>
+        <a href="april-week3.html">Week 3</a>
+        <a href="april-week4.html">Week 4</a>
+      </div>
+    </div>
+
+    <div class="month">
+      <h3>May</h3>
+      <div class="week">
+        <a href="may-week1.html">Week 1</a>
+        <a href="may-week2.html">Week 2</a>
+        <a href="may-week3.html">Week 3</a>
+        <a href="may-week4.html">Week 4</a>
+      </div>
+    </div>
+
+    <div class="month">
+      <h3>June</h3>
+      <div class="week">
+        <a href="june-week1.html">Week 1</a>
+        <a href="june-week2.html">Week 2</a>
+        <a href="june-week3.html">Week 3</a>
+        <a href="june-week4.html">Week 4</a>
+      </div>
+    </div>
+
+    <div class="month">
+      <h3>July</h3>
+      <div class="week">
+        <a href="july-week1.html">Week 1</a>
+        <a href="july-week2.html">Week 2</a>
+        <a href="july-week3.html">Week 3</a>
+        <a href="july-week4.html">Week 4</a>
+      </div>
+    </div>
+
+    <div class="month">
+      <h3>August</h3>
+      <div class="week">
+        <a href="august-week1.html">Week 1</a>
+        <a href="august-week2.html">Week 2</a>
+        <a href="august-week3.html">Week 3</a>
+        <a href="august-week4.html">Week 4</a>
+      </div>
+    </div>
+
+    <div class="month">
+      <h3>September</h3>
+      <div class="week">
+        <a href="september-week1.html">Week 1</a>
+        <a href="september-week2.html">Week 2</a>
+        <a href="september-week3.html">Week 3</a>
+        <a href="september-week4.html">Week 4</a>
+      </div>
+    </div>
+
+    <div class="month">
+      <h3>October</h3>
+      <div class="week">
+        <a href="october-week1.html">Week 1</a>
+        <a href="october-week2.html">Week 2</a>
+        <a href="october-week3.html">Week 3</a>
+        <a href="october-week4.html">Week 4</a>
+      </div>
+    </div>
+
+    <div class="month">
+      <h3>November</h3>
+      <div class="week">
+        <a href="november-week1.html">Week 1</a>
+        <a href="november-week2.html">Week 2</a>
+        <a href="november-week3.html">Week 3</a>
+        <a href="november-week4.html">Week 4</a>
+      </div>
+    </div>
+
+    <div class="month">
+      <h3>December</h3>
+      <div class="week">
+        <a href="december-week1.html">Week 1</a>
+        <a href="december-week2.html">Week 2</a>
+        <a href="december-week3.html">Week 3</a>
+        <a href="december-week4.html">Week 4</a>
+      </div>
+    </div>
+
+    <!-- Initial Assessment and Programs links -->
+    <div class="assessment-link-wrap">
+      <a href="assessment.html" class="assessment-link">Initial Assessment Form</a>
+      <a href="index.html" class="assessment-link">Programs</a>
+    </div>
+  </div>
+
+  <div class="main">
+    <h1>AG Check-In System</h1>
+    <p>Select your week from the sidebar to begin your check-in</p>
+  </div>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const themePreferenceKey = 'ag-check-in-theme';
+    const monthKeyMap = {
+      january: 'january', february: 'february', march: 'march', april: 'april',
+      may: 'may', june: 'june', july: 'july', august: 'august',
+      september: 'september', october: 'october', november: 'november', december: 'december'
+    };
+
+    function applyTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Toggle light mode' : 'Toggle dark mode');
+      themeToggle.setAttribute('title', theme === 'dark' ? 'Toggle light mode' : 'Toggle dark mode');
+      localStorage.setItem(themePreferenceKey, theme);
+    }
+    function getStoredTheme() {
+      const s = localStorage.getItem(themePreferenceKey);
+      if (s === 'light' || s === 'dark') return s;
+      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    function wireWeekLinks() {
+      document.querySelectorAll('.month').forEach((monthElement) => {
+        const heading = monthElement.querySelector('h3');
+        const monthKey = heading ? monthKeyMap[heading.textContent.trim().toLowerCase()] : null;
+        const weekLinks = monthElement.querySelectorAll('.week a');
+        if (!monthKey) return;
+        weekLinks.forEach((link, index) => {
+          link.href = `checkin.html?month=${monthKey}&week=${index + 1}`;
+        });
+      });
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.body.getAttribute('data-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    wireWeekLinks();
+    applyTheme(getStoredTheme());
+  </script>
+</body>
+</html>
