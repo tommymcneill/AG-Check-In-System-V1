@@ -1467,7 +1467,7 @@
     function getStoredTheme() {
       const s = localStorage.getItem(themePreferenceKey);
       if (s === 'light' || s === 'dark') return s;
-      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      return 'dark';
     }
 
     themeToggle.addEventListener('click', () => {
