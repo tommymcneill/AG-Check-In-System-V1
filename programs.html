@@ -1,0 +1,2597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AG Training Programs</title>
+
+  <style>
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-Light.ttf') format('truetype');
+      font-weight: 300; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-Regular.ttf') format('truetype');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-Medium.ttf') format('truetype');
+      font-weight: 500; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-SemiBold.ttf') format('truetype');
+      font-weight: 600; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-Bold.ttf') format('truetype');
+      font-weight: 700; font-style: normal; font-display: swap;
+    }
+
+    :root {
+      --page-bg: #000000;
+      --page-bg-end: #000000;
+      --page-bg-accent: rgba(255, 212, 0, 0.10);
+      --sidebar-bg: #000000;
+      --main-bg: #000000;
+      --border: #222222;
+      --panel: #111111;
+      --text: #ffd400;
+      --title: #ffffff;
+      --link: #ffd400;
+      --link-hover-bg: #1a1a1a;
+      --main-heading: #ffffff;
+      --toggle-bg: rgba(255, 255, 255, 0.08);
+      --toggle-border: rgba(255, 255, 255, 0.14);
+      --toggle-text: #ffffff;
+      --toggle-shadow: rgba(0, 0, 0, 0.22);
+      --accent-on-gold: #000000;
+      --gold-accent: #ffd400;
+      --variety-body-text: #ffffff;
+    }
+
+    body[data-theme='light'] {
+      --page-bg: #f7f7f4;
+      --page-bg-end: #ffffff;
+      --page-bg-accent: rgba(255, 212, 0, 0.16);
+      --sidebar-bg: #ffffff;
+      --main-bg: #ffffff;
+      --border: #d8d5cb;
+      --panel: #eceae4;
+      --text: #111111;
+      --title: #111111;
+      --link: #111111;
+      --link-hover-bg: rgba(0, 0, 0, 0.05);
+      --main-heading: #111111;
+      --toggle-bg: #fdfcf8;
+      --toggle-border: rgba(0, 0, 0, 0.12);
+      --toggle-text: #111111;
+      --toggle-shadow: rgba(0, 0, 0, 0.10);
+      --gold-accent: #d9a441;
+      --variety-body-text: #1a1a1a;
+    }
+
+    * { box-sizing: border-box; }
+
+    .hidden { display: none !important; }
+
+    /* Question field styles (match check-in styling) */
+    .field {
+      margin-bottom: 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+    .field.full { display: block; }
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--main-heading);
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: var(--sidebar-bg);
+      color: var(--text);
+      padding: 10px 12px;
+      font-family: 'Rajdhani', Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .field textarea { min-height: 84px; }
+    .field-note { margin-top: 8px; color: var(--text); opacity: 0.75; font-size: 13px; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Rajdhani', Arial, sans-serif;
+      font-weight: 400;
+      display: flex;
+      background:
+        radial-gradient(circle at top, var(--page-bg-accent), transparent 35%),
+        linear-gradient(180deg, var(--page-bg) 0%, var(--page-bg-end) 100%);
+      color: var(--text);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px; right: 16px;
+      z-index: 20;
+      width: 48px; height: 48px;
+      border-radius: 999px;
+      border: 1px solid var(--toggle-border);
+      background: var(--toggle-bg);
+      color: var(--toggle-text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 12px 28px var(--toggle-shadow);
+      backdrop-filter: blur(10px);
+    }
+    .theme-toggle svg { width: 22px; height: 22px; fill: currentColor; }
+    .theme-toggle .sun-icon, .theme-toggle .moon-icon { display: none; }
+    body[data-theme='dark'] .theme-toggle .sun-icon { display: block; }
+    body[data-theme='light'] .theme-toggle .moon-icon { display: block; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      background: var(--sidebar-bg);
+      padding: 20px;
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .logo { width: 100%; margin-bottom: 20px; }
+
+    .title {
+      font-size: 18px;
+      margin-bottom: 16px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--title);
+    }
+
+    .tab-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      text-decoration: none;
+      color: var(--link);
+      font-size: 14px;
+      font-weight: 500;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: 0.2s;
+      font-family: 'Rajdhani', Arial, sans-serif;
+      cursor: pointer;
+    }
+    .tab-btn:hover {
+      background: var(--link-hover-bg);
+      border-color: var(--text);
+      transform: translateX(2px);
+    }
+    .tab-btn.active {
+      background: #ffd400;
+      border-color: #ffd400;
+      color: #000000;
+      font-weight: 700;
+    }
+    body[data-theme='light'] .tab-btn.active { color: #000000; }
+
+    /* MAIN AREA */
+    .main {
+      flex: 1;
+      padding: 60px 40px;
+      background: var(--main-bg);
+      min-width: 0;
+    }
+
+    .program-panel { display: none; }
+    .program-panel.active { display: block; max-width: 760px; margin: 0 auto; }
+
+    .program-panel h1 {
+      font-size: 30px;
+      margin-bottom: 6px;
+      color: var(--main-heading);
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .program-panel .subtitle {
+      color: var(--text);
+      font-size: 14px;
+      opacity: 0.85;
+      margin: 0 0 28px;
+      font-weight: 400;
+    }
+
+    .program-panel p,
+    .program-panel li,
+    .field-note,
+    .calc-breakdown,
+    .placeholder-note,
+    .calc-note {
+      text-align: justify;
+      text-align-last: left;
+      text-justify: inter-word;
+      text-wrap: normal;
+      word-break: normal;
+      overflow-wrap: break-word;
+      hyphens: auto;
+      text-rendering: optimizeLegibility;
+    }
+
+    .content-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+    }
+
+    .placeholder-note {
+      color: var(--text);
+      opacity: 0.7;
+      font-size: 14px;
+      font-style: italic;
+      margin: 0;
+      padding-left: 2px;
+      padding-right: 2px;
+      text-align: justify;
+      text-align-last: left;
+      text-wrap: normal;
+      word-break: normal;
+      overflow-wrap: break-word;
+    }
+
+    /* Reserved zones for future content — leave empty for now */
+    .pdf-zone {
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+    }
+    .pdf-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .pdf-link,
+    .pdf-download {
+      display: inline-block;
+      padding: 10px 16px;
+      background: var(--accent, #d9a441);
+      color: #111;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      font-family: 'Rajdhani', Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+    .pdf-link:hover,
+    .pdf-download:hover { opacity: 0.9; }
+    .pdf-preview {
+      display: block;
+      width: 100%;
+      max-width: 220px;
+      margin: 0 auto;
+      background: transparent;
+      border: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: none;
+    }
+    .pdf-preview img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 220px;
+      margin: 0 auto;
+      background: transparent;
+      border-radius: 8px;
+    }
+    .workout-text-zone {
+      margin-top: 18px;
+    }
+
+    .program-asset-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    .program-asset-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .program-gender-label {
+      margin: 0 0 12px;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .ag4-gender-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .ag4-gender-tab-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-family: 'Rajdhani', Arial, sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .ag4-gender-tab-btn.active {
+      background: #ffd400;
+      border-color: #ffd400;
+      color: #000000;
+    }
+
+    .ag4-gender-tab-panel {
+      display: none;
+    }
+
+    .ag4-gender-tab-panel.active {
+      display: block;
+    }
+
+    .ag4-gender-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .ag4-gender-card h3 {
+      margin: 0 0 12px;
+      color: var(--text);
+      font-size: 18px;
+      letter-spacing: 0.05em;
+    }
+
+    .ag4-gender-card ul {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.8;
+    }
+
+    .program-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .program-item-label {
+      flex: 1;
+    }
+
+    .program-download-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .program-download-text {
+      color: var(--gold-accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-thickness: 1.2px;
+      opacity: 0.95;
+    }
+
+    .program-download-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      color: var(--gold-accent);
+      opacity: 0.9;
+      transition: 0.2s ease;
+      text-decoration: none;
+    }
+
+    .program-download-link:hover,
+    .program-download-text:hover {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
+
+    .program-download-link svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .variety-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .variety-tab-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-family: 'Rajdhani', Arial, sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: 0.2s ease;
+    }
+
+    .variety-tab-btn.active {
+      background: #ffd400;
+      border-color: #ffd400;
+      color: #000000;
+    }
+
+    .variety-tab-panel {
+      display: none;
+      padding: 18px 0 0;
+    }
+
+    .variety-tab-panel.active {
+      display: block;
+    }
+
+    .variety-workout-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    .variety-workout-card h3 {
+      margin: 0 0 12px;
+      color: var(--gold-accent);
+      font-size: 20px;
+      letter-spacing: 0.06em;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .variety-workout-card p {
+      margin: 0 auto 10px;
+      color: var(--variety-body-text);
+      line-height: 1.7;
+      text-align: center !important;
+      text-align-last: center !important;
+      display: block;
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .variety-workout-card .targeted-for {
+      color: var(--gold-accent);
+      font-weight: 700;
+      text-align: center !important;
+      text-align-last: center !important;
+      display: block;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto 10px;
+    }
+
+    .variety-workout-card .workout-level {
+      font-weight: 700;
+      color: var(--gold-accent);
+      text-align: center !important;
+      text-align-last: center !important;
+      display: block;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto 10px;
+    }
+
+    .variety-workout-card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--text);
+      line-height: 1.8;
+      text-align: center;
+      list-style-position: inside;
+    }
+
+    .variety-workout-card li {
+      margin-bottom: 6px;
+    }
+
+    .variety-download {
+      margin-top: 28px;
+      padding-top: 10px;
+      text-align: center;
+    }
+
+    /* Sidebar section heading (e.g. "Books") — matches .title styling */
+    .sidebar-heading {
+      margin: 20px 0 16px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 18px;
+      letter-spacing: 1px;
+      font-weight: 700;
+      color: var(--title);
+    }
+    .tab-list + .sidebar-heading { margin-top: 8px; }
+
+    /* CALORIE CALCULATOR */
+    .calc-form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .calc-field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--main-heading);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .calc-field select,
+    .calc-field input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--sidebar-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'Rajdhani', Arial, sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .calc-weight-row {
+      display: flex;
+      gap: 10px;
+    }
+    .calc-weight-row input { flex: 1; }
+    .calc-weight-row select { width: 90px; flex-shrink: 0; }
+    .calc-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .calc-checkbox input { margin-top: 3px; accent-color: #ffd400; }
+    .calc-button {
+      margin-top: 4px;
+      padding: 13px 20px;
+      background: #ffd400;
+      border: 1px solid #ffd400;
+      color: #000000;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Rajdhani', Arial, sans-serif;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+      transition: 0.2s;
+    }
+    .calc-button:hover { background: #e6bf00; border-color: #e6bf00; }
+
+    .calc-result {
+      margin-top: 26px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+      display: none;
+    }
+    .calc-result.show { display: block; }
+    .calc-result .result-number {
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--main-heading);
+      line-height: 1.1;
+    }
+    .calc-result .result-sub {
+      font-size: 13px;
+      opacity: 0.75;
+      margin-top: 4px;
+    }
+    .calc-breakdown {
+      margin-top: 18px;
+      font-size: 13px;
+      opacity: 0.85;
+      line-height: 1.7;
+    }
+    .calc-note {
+      font-size: 12px;
+      opacity: 0.6;
+      margin-top: 18px;
+      font-style: italic;
+    }
+
+    @media (max-width: 720px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+      .tab-list { flex-direction: row; flex-wrap: wrap; }
+      .tab-btn { width: auto; flex: 1 1 auto; text-align: center; }
+      .main { padding: 40px 16px; }
+    }
+  </style>
+</head>
+
+<body>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light mode" title="Toggle light mode">
+    <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5" fill="currentColor"/>
+      <line x1="12" y1="2.5" x2="12" y2="5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="12" y1="18.8" x2="12" y2="21.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="2.5" y1="12" x2="5.2" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="18.8" y1="12" x2="21.5" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="5.2" y1="5.2" x2="7.1" y2="7.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="16.9" y1="16.9" x2="18.8" y2="18.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="5.2" y1="18.8" x2="7.1" y2="16.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="16.9" y1="7.1" x2="18.8" y2="5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M21 14.2A9 9 0 0 1 9.8 3a1 1 0 0 0-1.2 1.2A8 8 0 1 0 19.8 15.4a1 1 0 0 0 1.2-1.2Z"/>
+    </svg>
+  </button>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <img src="assets/images/ag-logo.png" alt="AG Logo" class="logo">
+
+    <div class="title">Training Programs</div>
+
+    <nav class="tab-list" id="tabList">
+      <button class="tab-btn active" data-tab="ag4-beginner">AG4 – Beginner</button>
+      <button class="tab-btn" data-tab="ag4-intermediate">AG4 – Intermediate</button>
+      <button class="tab-btn" data-tab="ag4-advanced">AG4 – Advanced</button>
+      <button class="tab-btn" data-tab="ag4-variety">AG4 Variety Workouts</button>
+      <button class="tab-btn" data-tab="ag-home">AG Home Workout Program</button>
+      <button class="tab-btn" data-tab="ag-outdoor">AG Outdoor Workout Program</button>
+      <button class="tab-btn" data-tab="nutritional-assessment">Nutritional Assessment</button>
+      <button class="tab-btn" data-tab="six-pack-shortcut">6 Pack Shortcuts</button>
+    </nav>
+
+    <h3 class="sidebar-heading">Books</h3>
+    <nav class="tab-list">
+      <button class="tab-btn" data-tab="book-mindset-nutrition">Mindset and Nutrition</button>
+      <button class="tab-btn" data-tab="book-fitness-mastery">Fitness Mastery</button>
+      <button class="tab-btn" data-tab="book-life-coaching">Life Coaching</button>
+    </nav>
+
+    <h3 class="sidebar-heading">Tools</h3>
+    <nav class="tab-list">
+      <button class="tab-btn" data-tab="calorie-calculator">Calorie Calculator</button>
+      <button class="tab-btn" data-tab="program-selector">Program Selector</button>
+      <a href="index1.html" class="tab-btn">Check Ins</a>
+    </nav>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="program-panel active" id="ag4-beginner">
+      <h1>AG4 – Beginner</h1>
+      <p class="subtitle">Foundational program for new clients</p>
+      <div class="content-box">
+        <div class="ag4-gender-tabs">
+          <button class="ag4-gender-tab-btn active" type="button" data-level="ag4-beginner" data-gender="male">Male</button>
+          <button class="ag4-gender-tab-btn" type="button" data-level="ag4-beginner" data-gender="female">Female</button>
+        </div>
+
+        <div class="ag4-gender-tab-panel active" data-gender-panel="ag4-beginner-male">
+          <div class="ag4-gender-card">
+            <ul>
+              <li class="program-item">
+                <span class="program-item-label">Male Beginner 30 Minute Workouts For Busy People (3 Days)</span>
+                <span class="program-download-group">
+                  <a class="program-download-text" href="assets/pdfs/AG4 Beginner 3 Days A Week (Mens) - 30 Minute Workouts For Busy People English.pdf" download aria-label="Download Male Beginner 30 Minute Workouts For Busy People PDF" title="Download PDF">Download</a>
+                  <a class="program-download-link" href="assets/pdfs/AG4 Beginner 3 Days A Week (Mens) - 30 Minute Workouts For Busy People English.pdf" download aria-label="Download Male Beginner 30 Minute Workouts For Busy People PDF" title="Download PDF">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2.75h5.5v18.5H4.5v-14L14 2.75Z"/><path d="M14 2.75v6.5h6"/><path d="M8 14.5h8"/><path d="M8 17.5h8"/><path d="M12 9.5v6"/></svg>
+                  </a>
+                </span>
+              </li>
+              <li class="program-item">
+                <span class="program-item-label">Male Beginner Upper Lower Supersets Full Body (3 Days)</span>
+                <span class="program-download-group">
+                  <a class="program-download-text" href="assets/pdfs/AG4 Beginner 3 Days A Week FULL BODY MENS - UPPER LOWER SUPERSETS STYLE.pdf" download aria-label="Download Male Beginner Upper Lower Supersets Full Body PDF" title="Download PDF">Download</a>
+                  <a class="program-download-link" href="assets/pdfs/AG4 Beginner 3 Days A Week FULL BODY MENS - UPPER LOWER SUPERSETS STYLE.pdf" download aria-label="Download Male Beginner Upper Lower Supersets Full Body PDF" title="Download PDF">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2.75h5.5v18.5H4.5v-14L14 2.75Z"/><path d="M14 2.75v6.5h6"/><path d="M8 14.5h8"/><path d="M8 17.5h8"/><path d="M12 9.5v6"/></svg>
+                  </a>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ag4-gender-tab-panel" data-gender-panel="ag4-beginner-female">
+          <div class="ag4-gender-card">
+            <ul>
+              <li class="program-item">
+                <span class="program-item-label">Female Beginner Lower Only 3 Days A Week</span>
+                <span class="program-download-group">
+                  <a class="program-download-text" href="assets/pdfs/AG4%20Lower%20Only%20Beginner%203xWeek%20English%20Womens.pdf.pdf" download aria-label="Download Female Beginner Lower Only 3 Days A Week PDF" title="Download PDF">Download</a>
+                  <a class="program-download-link" href="assets/pdfs/AG4%20Lower%20Only%20Beginner%203xWeek%20English%20Womens.pdf.pdf" download aria-label="Download Female Beginner Lower Only 3 Days A Week PDF" title="Download PDF">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2.75h5.5v18.5H4.5v-14L14 2.75Z"/><path d="M14 2.75v6.5h6"/><path d="M8 14.5h8"/><path d="M8 17.5h8"/><path d="M12 9.5v6"/></svg>
+                  </a>
+                </span>
+              </li>
+              <li class="program-item">
+                <span class="program-item-label">Female Beginner Full Body 3 Days A Week</span>
+                <span class="program-download-group">
+                  <a class="program-download-text" href="assets/pdfs/AG4%20Beginner%203%20Days%20A%20Week%20Full%20Body%20%28Womens%29%20English%20.pdf" download aria-label="Download Female Beginner Full Body 3 Days A Week PDF" title="Download PDF">Download</a>
+                  <a class="program-download-link" href="assets/pdfs/AG4%20Beginner%203%20Days%20A%20Week%20Full%20Body%20%28Womens%29%20English%20.pdf" download aria-label="Download Female Beginner Full Body 3 Days A Week PDF" title="Download PDF">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2.75h5.5v18.5H4.5v-14L14 2.75Z"/><path d="M14 2.75v6.5h6"/><path d="M8 14.5h8"/><path d="M8 17.5h8"/><path d="M12 9.5v6"/></svg>
+                  </a>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="program-panel" id="ag4-intermediate">
+      <h1>AG4 – Intermediate</h1>
+      <p class="subtitle">Next step up for established clients</p>
+      <div class="content-box">
+        <div class="ag4-gender-tabs">
+          <button class="ag4-gender-tab-btn active" type="button" data-level="ag4-intermediate" data-gender="male">Male</button>
+          <button class="ag4-gender-tab-btn" type="button" data-level="ag4-intermediate" data-gender="female">Female</button>
+        </div>
+
+        <div class="ag4-gender-tab-panel active" data-gender-panel="ag4-intermediate-male">
+          <div class="ag4-gender-card">
+            <ul>
+              <li class="program-item">
+                <span class="program-item-label">Male Intermediate 30 Minute Workouts For Busy People 4 Days A Week</span>
+                <span class="program-download-group">
+                  <a class="program-download-text" href="assets/pdfs/AG4%20Intermediate%204%20Days%20A%20Week%20%28Mens%29%20-%2030%20Minute%20Workouts%20For%20Busy%20People%20.pdf" download aria-label="Download Male Intermediate 30 Minute Workouts For Busy People PDF" title="Download PDF">Download</a>
+                  <a class="program-download-link" href="assets/pdfs/AG4%20Intermediate%204%20Days%20A%20Week%20%28Mens%29%20-%2030%20Minute%20Workouts%20For%20Busy%20People%20.pdf" download aria-label="Download Male Intermediate 30 Minute Workouts For Busy People PDF" title="Download PDF">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2.75h5.5v18.5H4.5v-14L14 2.75Z"/><path d="M14 2.75v6.5h6"/><path d="M8 14.5h8"/><path d="M8 17.5h8"/><path d="M12 9.5v6"/></svg>
+                  </a>
+                </span>
+              </li>
+              <li class="program-item">
+                <span class="program-item-label">Male Intermediate Upper Lower Supersets Full Body (3 Days A Week)</span>
+                <span class="program-download-group">
+                  <a class="program-download-text" href="assets/pdfs/AG4 Intermediate 3 Days A Week FULL BODY MENS - UPPER LOWER SUPERSETS STYLE(English).pdf.pdf" download aria-label="Download Male Intermediate Upper Lower Supersets Full Body PDF" title="Download PDF">Download</a>
+                  <a class="program-download-link" href="assets/pdfs/AG4 Intermediate 3 Days A Week FULL BODY MENS - UPPER LOWER SUPERSETS STYLE(English).pdf.pdf" download aria-label="Download Male Intermediate Upper Lower Supersets Full Body PDF" title="Download PDF">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2.75h5.5v18.5H4.5v-14L14 2.75Z"/><path d="M14 2.75v6.5h6"/><path d="M8 14.5h8"/><path d="M8 17.5h8"/><path d="M12 9.5v6"/></svg>
+                  </a>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ag4-gender-tab-panel" data-gender-panel="ag4-intermediate-female">
+          <div class="ag4-gender-card">
+            <ul>
+              <li class="program-item">
+                <span class="program-item-label">Female Intermediate Lower Only 3 Days A Week</span>
+                <span class="program-download-group">
+                  <a class="program-download-text" href="assets/pdfs/AG4 Lower Only 3x Week Intermediate English Womens.pdf.pdf" download aria-label="Download Female Intermediate Lower Only 3 Days A Week PDF" title="Download PDF">Download</a>
+                  <a class="program-download-link" href="assets/pdfs/AG4 Lower Only 3x Week Intermediate English Womens.pdf" download aria-label="Download Female Intermediate Lower Only 3 Days A Week PDF" title="Download PDF">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2.75h5.5v18.5H4.5v-14L14 2.75Z"/><path d="M14 2.75v6.5h6"/><path d="M8 14.5h8"/><path d="M8 17.5h8"/><path d="M12 9.5v6"/></svg>
+                  </a>
+                </span>
+              </li>
+              <li class="program-item">
+                <span class="program-item-label">Female Intermediate Full Body 3 Days A Week</span>
+                <span class="program-download-group">
+                  <a class="program-download-text" href="assets/pdfs/AG4%203%20Days%20A%20Week%20Full%20Body%20Intermediate%20%28Womens%29%20English%20.pdf" download aria-label="Download Female Intermediate Full Body 3 Days A Week PDF" title="Download PDF">Download</a>
+                  <a class="program-download-link" href="assets/pdfs/AG4%203%20Days%20A%20Week%20Full%20Body%20Intermediate%20%28Womens%29%20English%20.pdf" download aria-label="Download Female Intermediate Full Body 3 Days A Week PDF" title="Download PDF">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2.75h5.5v18.5H4.5v-14L14 2.75Z"/><path d="M14 2.75v6.5h6"/><path d="M8 14.5h8"/><path d="M8 17.5h8"/><path d="M12 9.5v6"/></svg>
+                  </a>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="program-panel" id="ag4-advanced">
+      <h1>AG4 – Advanced</h1>
+      <p class="subtitle">Program for advanced gym-goers.</p>
+      <div class="content-box">
+        <div class="ag4-gender-tabs">
+          <button class="ag4-gender-tab-btn active" type="button" data-level="ag4-advanced" data-gender="male">Male</button>
+          <button class="ag4-gender-tab-btn" type="button" data-level="ag4-advanced" data-gender="female">Female</button>
+        </div>
+
+        <div class="ag4-gender-tab-panel active" data-gender-panel="ag4-advanced-male">
+          <div class="ag4-gender-card">
+            <ul>
+              <li class="program-item">
+                <span class="program-item-label">Advanced – Male Athlete Programme 5 Days A Week</span>
+                <span class="program-download-group">
+                  <a class="program-download-text" href="assets/pdfs/AG4%20Mens%20Advanced%20Program.pdf" download aria-label="Download Advanced Male Athlete Programme PDF" title="Download PDF">Download</a>
+                  <a class="program-download-link" href="assets/pdfs/AG4%20Mens%20Advanced%20Program.pdf" download aria-label="Download Advanced Male Athlete Programme PDF" title="Download PDF">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2.75h5.5v18.5H4.5v-14L14 2.75Z"/><path d="M14 2.75v6.5h6"/><path d="M8 14.5h8"/><path d="M8 17.5h8"/><path d="M12 9.5v6"/></svg>
+                  </a>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ag4-gender-tab-panel" data-gender-panel="ag4-advanced-female">
+          <div class="ag4-gender-card">
+            <ul>
+              <li class="program-item">
+                <span class="program-item-label">Advanced Female Athlete Programme 5 Days A Week</span>
+                <span class="program-download-group">
+                  <a class="program-download-text" href="assets/pdfs/AG4 Womens Advanced Program.pdf" download aria-label="Download Advanced Female Athlete Programme PDF" title="Download PDF">Download</a>
+                  <a class="program-download-link" href="assets/pdfs/AG4 Womens Advanced Program.pdf" download aria-label="Download Advanced Female Athlete Programme PDF" title="Download PDF">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2.75h5.5v18.5H4.5v-14L14 2.75Z"/><path d="M14 2.75v6.5h6"/><path d="M8 14.5h8"/><path d="M8 17.5h8"/><path d="M12 9.5v6"/></svg>
+                  </a>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <!-- Program Selector Panel -->
+      <div class="program-panel" id="program-selector">
+        <h1>Program Selector</h1>
+        <p class="subtitle">Simple questionnaire to match you with the most suitable AG4 programme</p>
+        <div class="content-box">
+          <form id="programForm">
+            <div class="field" id="primaryChoiceWrap">
+              <label class="field-label">Choose one option</label>
+              <select id="primaryChoice" name="primaryChoice" onchange="console.log('primaryChoice inline change', this.value)">
+                <option value="" selected>-- Choose an option --</option>
+                <option value="general">I'm looking to improve my physique and general fitness</option>
+                <option value="athlete">I'm an athlete looking to train alongside my sport</option>
+              </select>
+            </div>
+
+            <!-- General flow: minimal questions only (sex + days) -->
+            <div class="field hidden" id="generalGroup">
+              <label class="field-label">Are you male or female?</label>
+              <select id="sex" name="sex">
+                <option value="" selected>-- Select sex --</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+
+            <div class="field hidden" id="experienceWrap">
+              <label class="field-label">Training experience</label>
+              <select id="experience" name="experience">
+                <option value="" selected>-- Select experience level --</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </div>
+
+            <div class="field hidden" id="preferenceWrap">
+              <label class="field-label">Training preference</label>
+              <select id="preference" name="preference">
+                <option value="" selected>-- Select preference --</option>
+                <option value="full_body">Full Body</option>
+                <option value="lower_only">Lower Only</option>
+                <option value="splits">Splits (Upper / Lower or Push / Pull / Legs)</option>
+                <option value="unsure">I'm not sure</option>
+              </select>
+            </div>
+
+            <div class="field hidden" id="workoutLengthWrap">
+              <label class="field-label">How long do you want each workout to take?</label>
+              <select id="workoutLength" name="workoutLength">
+                <option value="" selected>-- Select workout length --</option>
+                <option value="30-45">30–45 minutes</option>
+                <option value="60">1 hour</option>
+                <option value="unsure">I'm not sure</option>
+              </select>
+            </div>
+
+            <div class="field hidden" id="generalDaysWrap">
+              <label class="field-label">How many days a week do you want to train?</label>
+              <select id="daysPerWeek" name="daysPerWeek">
+                <option value="" selected>-- Select days per week --</option>
+                <option value="2">2 days</option>
+                <option value="3">3 days</option>
+                <option value="4">4 days</option>
+                <option value="5">5 days</option>
+                <option value="6">6+ days</option>
+              </select>
+            </div>
+
+            <div class="field hidden" id="injuryWrap">
+              <label class="field-label">Do you currently experience pain or discomfort in any of these areas?</label>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                <label><input type="checkbox" name="injury" value="Knee"> Knee</label>
+                <label><input type="checkbox" name="injury" value="Hip"> Hip</label>
+                <label><input type="checkbox" name="injury" value="Ankle"> Ankle / foot</label>
+                <label><input type="checkbox" name="injury" value="Lower back"> Lower back</label>
+                <label><input type="checkbox" name="injury" value="Shoulder"> Shoulder</label>
+                <label><input type="checkbox" name="injury" value="Elbow"> Elbow</label>
+                <label><input type="checkbox" name="injury" value="Wrist"> Wrist / hand</label>
+                <label><input type="checkbox" name="injury" value="Neck"> Neck</label>
+                <label><input type="checkbox" name="injury" value="None" id="injury-none"> None</label>
+              </div>
+              <p class="field-note">If you select one or more areas, we will recommend relevant training guides alongside your programme.</p>
+            </div>
+
+            <!-- Athlete flow: ask sex + athlete preference (2-3 full or 5 days) -->
+            <div class="field hidden" id="athleteGroup">
+              <label class="field-label">Are you male or female?</label>
+              <select id="athleteSex" name="athleteSex">
+                <option value="" selected>-- Select sex --</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+
+            <div class="field hidden" id="athleteChoiceWrap">
+              <label class="field-label">Which training option best matches you?</label>
+              <select id="athleteChoice" name="athleteChoice">
+                <option value="" selected>-- Select days & preference --</option>
+                <option value="2">2 days — 2–3 full-body sessions alongside my sport</option>
+                <option value="3">3 days — 2–3 full-body sessions alongside my sport</option>
+                <option value="4">4 days — 4-day athlete / intermediate split</option>
+                <option value="5">5 days — 5 days of intense training</option>
+                <option value="6">6+ days — 6 or more days (high-frequency)</option>
+              </select>
+            </div>
+
+            <div class="actions" style="margin-top:16px">
+              <button class="calc-button" id="getProgramButton" type="button" disabled>RECOMMEND MY PROGRAMME</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    <div class="program-panel" id="ag4-variety">
+      <h1>AG4 Variety Workouts</h1>
+      <p class="subtitle">Mix it up — variety sessions across all levels</p>
+      <div class="content-box">
+        <div class="variety-tabs" aria-label="Variety workout levels">
+          <button class="variety-tab-btn active" type="button" data-variety-tab="beginner">Beginner</button>
+          <button class="variety-tab-btn" type="button" data-variety-tab="intermediate">Intermediate</button>
+          <button class="variety-tab-btn" type="button" data-variety-tab="advanced">Advanced</button>
+        </div>
+
+        <div class="variety-tab-panel active" data-variety-panel="beginner">
+          <div class="variety-workout-card">
+            <h3>Shoulders + Arms Death Star Delts</h3>
+            <br>
+            <p class="workout-level">Level: Late Beginner</p>
+            <p class="targeted-for">Targeted For: Males</p>
+            <br>
+            <p>Barbell Overhead Shoulder Press 4 x 10</p>
+            <p>Arnold Press 3 x 10</p>
+            <p>Lateral Raise AG Dropsets 3 x 15</p>
+            <p>Machine Shoulder Press 3 x 10</p>
+            <p>Bicep Curl Machine 4 x 12</p>
+            <p>Tricep Extensions Machine 3 x 12</p>
+            <p>Overhead Tricep Extensions 3 x 15</p>
+            <p>Abs - AG 6 Minute Abs Workout.</p>
+            <br>
+          </div>
+           <div class="variety-workout-card">
+             <h3>Heavy Lifting Strength Workout</h3>
+             <br>
+            <p class="workout-level">Level: Late Beginner</p>
+            <p class="targeted-for">Targeted For: Males &amp; Females</p>
+            <br>
+            <p><em>"A full-body workout for when you just want to lift heavy and get some hormones released."</em></p>
+            <br>
+            <p>Deadlifts 3 sets of 10</p>
+            <p>Squat 3 sets of 10</p>
+            <p>Smith Incline Bench 3 sets of 10</p>
+            <p>Barbell Row Heavy 3 sets of 10</p>
+            <br>
+            </div>
+            <div class="variety-workout-card">
+             <h3>Arnold Schwarzenegger Home Workout</h3>
+            <p class="workout-level">Level: Late Beginner</p>
+            <p class="targeted-for">Targeted For: Males &amp; Females</p>
+            <br>
+            <p><em>"This workout is recommended by the great bodybuilding champion himself, as a way to build mass at home. Arnold recommends being able to complete this workout as a way to prepare your whole body to be strong before moving on to weights!"</em></p>
+            <br>
+            <p>Push Ups x 50 beg 100 int 150 adv</p>
+              <p>Dips Between Chairs 5 x 20</p>
+            <p>Rowing With Broom Between Chairs 50 Total</p>
+            <p>Sit Ups With Legs Pinned Down 200 Total</p>
+            <p>Bent Leg Raises 50 Total</p>
+            <p>Bent Over Broom Twists 50 Total</p>
+            <p>Squats 70 Reps</p>
+            <p>Calf Raises 50 Reps</p>
+            <p>Close Grip Chin Ups 30 Total</p>
+             <br>
+            </div>
+        </div>
+
+        <div class="variety-tab-panel" data-variety-panel="intermediate">
+          <div class="variety-workout-card">
+            
+
+            <h3>Thor Workout</h3>
+            <p class="workout-level">Level: Intermediate</p>
+            <p class="targeted-for">Targeted For: Males</p>
+            <br>
+            <p><em>"This is Chris Hemsworth's workout routine, the actor who played the superhero Thor, this is the stripped back version."</em></p>
+            <br>
+            <p>Incline bench 12 10 8 8 6 4 - 6 sets</p>
+            <p>Incline DB bench - 4 sets x 12</p>
+            <p>Chest Press Machine - 3 x 15</p>
+            <p>Chest Fly Machine - 4 x 12</p>
+            <p>Dips 4 x 15</p>
+          </div>
+         
+            <div class="variety-workout-card">
+            
+
+            <h3>Savage Workout</h3>
+            <p class="workout-level">Level: Intermediate</p>
+            <p class="targeted-for">Targeted For: Males &amp; Females</p>
+            <br>
+            <p>One set max pull ups. (Really wide pull ups)</p>
+            <p>Lat Pull Down - Heavy! 3 x 15 (pull with force, not slow)</p>
+            <p>T bar Row 3 x 10</p>
+            <p>Cable Row - One Arm (pull with force, not slow) 3 x 15</p>
+            <p>Deadlift 3 x 10</p>
+            <p>Squats 3 x 10</p>
+          </div>
+
+           <div class="variety-workout-card">
+            <h3>Sore Upper Chest Workout</h3>
+            <p class="workout-level">Level: Intermediate</p>
+            <p class="targeted-for">Targeted For: Males</p>
+            <p>Incline DB Shoulder Press - 4 x 10 plus Barbell Superset (Pick Up A Barbell Of A Lower Weight Straight After The Dumbells, Do 5 - 10 Extra Reps. Do This All 4 Sets.)</p>
+            <p>Incline Smith Machine Bench - Use weight that you can do 3 sets of 10 with. On the last set, do 10 reps with the normal weight, exploding with no pauses, then instantly lower the weight by 10% to do another 10 pause reps with 3-4 second pause.</p>
+            <p>Incline Chest Machine - 4 x 12</p>
+            <p>Lateral Raise AG Dropset</p>
+            <p>Tricep Pushdown Straight Bar 3 x 12</p>
+            <p>Tricep Rope Pushdown With 2s Pause at Bottom 3 x 12</p>
+            <p>Behind Head Tricep Extension Cable 3 x 12</p>
+          </div>
+
+
+        </div>
+
+        <div class="variety-tab-panel" data-variety-panel="advanced">
+          <div class="variety-workout-card">
+            <h3>Legs Destroyer 2.0</h3>
+            <p class="workout-level">Level: Advanced</p>
+            <p class="targeted-for">Targeted For: Males &amp; Females</p>
+            <br>
+            <p>Warm Up - AG Light Legs Warm Up</p>
+            <p>Squats 3 x 10</p>
+            <p>Leg Extension Machine 15 Reps straight into</p>
+            <p>Dumbbell lunges 6 reps per leg, straight into Leg Press 15 reps.</p>
+            <p>30 seconds rest after all exercises are complete.</p>
+            <p>Finish 4 circuits of this.</p>
+            <p>Select 3 or 4 calves exercises from the following:</p>
+            <p>Seated Calf Raise Machine, Standing Calf Raise Machine,</p>
+            <p>Dumbbell Calf Raise On Step</p>
+            <p>45 Degree Leg Press Calf Raise, Bodyweight Calf Raise On Step</p>
+            <p>Hit all these Calve machines one after the other until failure in the 10–12 rep range with no rest.</p>
+            <p>Then take 30 seconds rest and repeat for 3 circuits.</p>
+            <br>
+          </div>
+          <div class="variety-workout-card">
+
+            <h3>Back Destroyer 2.0</h3>
+            <p class="workout-level">Level: Advanced</p>
+            <p class="targeted-for">Targeted For: Males</p>
+            <br>
+            <p>Warm Up: AG Pull Day Warm Up</p>
+            <p>Pull Ups To Failure</p>
+            <p>Lat Raises. 4 x 15</p>
+            <p>Cable Row 4 x 15</p>
+            <p>Rear Delt Fly. (Heavy To Light, Leaning In) 5 10 10 15</p>
+            <p>Face Pulls x Y Raise SS. (12 reps each)</p>
+            <p>Barbell Row, superset into T-Bar Row. SS Into DB Row.</p>
+             </div>
+
+            <div class="variety-workout-card">
+
+            <h3>Thor Chest Workout Hard Mode</h3>
+            <p class="workout-level">Level: Advanced</p>
+            <p class="targeted-for">Targeted For: Males</p>
+            <br>
+            <p><em>This is the workout that Chris Hemsworth used to turn himself into the superhero Thor. It is very rewarding and one of my favorites.</em></p>
+            <p>Bench Press 12 10 8 8 8 6 4 4</p>
+            <p>Incline DB Press 4 x 8-12 Last Set Dropset</p>
+            <p>Chest Fly - 4 x 8-12 SS if possible with:</p>
+            <p>Machine Chest Press - 4 x 15 SS Cable or Standing DB Low To High Fly</p>
+            <p>Dips 10 x 10</p>
+            <p>Incline Bench Plate Loaded Machine 3 x 10</p>
+             </div>
+
+             <div class="variety-workout-card">
+
+            <h3>1 Hour Push Workout</h3>
+            <p class="workout-level">Level: Advanced</p>
+            <p class="targeted-for">Targeted For: Males</p>
+            <br>
+            <p>DB Shoulder press 3 x 10 SS with barbell</p>
+            <p>Incline Bench DB 4 x 12</p>
+            <p>Smith Machine 4 x 12 last set pause rep pyramid up to 10 and back down</p>
+            <p>Chest Fly Machine 4 x 12</p>
+            <p>Incline Plate Loaded Chest Machine 4 x 12</p>
+            <p>Cable Fly 4 x 12</p>
+            <p>Chest finisher - Dips 3 x 12 and superset them with Lateral Raises.</p>
+            <p>Triceps Cable Pushdown 3 x 8</p>
+            <p>Rope Cable Pushdown 3 x 10 Pause Reps</p>
+            <p>Triceps Machine 3 x 10</p>
+            <p>Bench Dips 3 sets max SS Dumbbell Standing Kickback</p>
+
+            </div>
+
+            <div class="variety-workout-card">
+
+            <h3>1 Hour Pull (Action Hero Biceps)</h3>
+            <p class="workout-level">Level: Advanced</p>
+            <p class="targeted-for">Targeted For: Males</p>
+            <br>
+            <p>Pull Ups Max Set</p>
+            <p>Lateral Pull - 3 x 15</p>
+            <p>Barbell Row - 4 x 12</p>
+            <p>Reverse Fly - 4 x 12</p>
+            <p>Cable Row - 4 x 12</p>
+            <p>BB Bicep Curl 1 heavy set of 6rm</p>
+            <p>Cable Bicep curl 1s pause - 4 x 12</p>
+            <p>Incline Bicep Curl slow - 3 x 10</p>
+            <p>Bicep Curl Machine - 4 x 12</p>
+            <p>EZ Barbell drop set - 3 sets 15 reps, last set quickly drop 50% of plates off the EZ bar with no rest and do another 15 reps.</p>
+
+          </div>
+
+          <div class="variety-workout-card">
+            <h3>Advanced Full Body Mega Session</h3>
+            <p class="workout-level">Level: Advanced</p>
+            <p class="targeted-for">Targeted For: Males</p>
+            <br>
+            <p>This is for the elites! If I was to work my full body I would go from head to toe to make sure I don’t miss a muscle.</p>
+            <p>Dumbbell Shrugs 3 x 12</p>
+            <p>Dumbbell Shoulder Press 3 x 12</p>
+            <p>Lateral Raises AG Dropset 3 x 15</p>
+            <p>Rear Delts Fly Machine 3 x 15</p>
+            <p>Incline DB Bench 3 x 12</p>
+            <p>Incline Dumbell Fly 2 x 15</p>
+            <p>Chest Dips 2 x 15</p>
+            <p>Lateral Pulldown 3 x 15</p>
+            <p>Barbell Row 3 x 15</p>
+            <p>Bicep Curl Machine 3 x 10</p>
+            <p>Triceps Cable Behind Head Extension 3 x 10</p>
+            <p>Roman Chair Sit Ups 3 x failure</p>
+            <p>Back Extensions 3 x failure</p>
+            <p>Leg Press 3 x 12</p>
+            <p>Leg Extension 3 x 12</p>
+            <p>Leg Curl 3 x 12</p>
+            <p>Calves Machine 3 x 15</p>
+          </div>
+        </div>
+
+        <div class="variety-download">
+          <a class="pdf-download" href="assets/pdfs/AG4-Variety-Workouts.pdf" download="AG4-Variety-Workouts.pdf">Download Variety Workouts PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="program-panel" id="ag-home">
+      <h1>AG Home Workout Program</h1>
+      <p class="subtitle">No gym required.</p>
+      <div class="content-box">
+        <div class="program-asset-grid">
+          <div class="program-asset-card">
+            <h3 class="program-gender-label">Male</h3>
+            <div class="pdf-zone">
+              <div class="pdf-preview">
+                <img src="assets/images/Home-Training%20-Men.png" alt="AG Home Workout Program for men cover preview">
+              </div>
+              <div class="pdf-actions">
+                <a class="pdf-download" href="assets/images/Home-Training%20-Men.png" download>Download Programme</a>
+              </div>
+            </div>
+            <div class="workout-text-zone">
+              <p class="placeholder-note">Programming that teaches you the secrets of how to use your home to progressively overload your training, with a focus on aesthetic bodybuilding. Actually get a good workout that you feel hitting your body at home.</p>
+            </div>
+          </div>
+
+          <div class="program-asset-card">
+            <h3 class="program-gender-label">Female</h3>
+            <div class="pdf-zone">
+              <div class="pdf-preview">
+                <img src="assets/images/Home-Training-Women.png" alt="AG Home Workout Program for women cover preview">
+              </div>
+              <div class="pdf-actions">
+                <a class="pdf-download" href="assets/images/Home-Training-Women.png" download>Download Programme</a>
+              </div>
+            </div>
+            <div class="workout-text-zone">
+              <p class="placeholder-note">Programming that teaches you the secrets of how to use your home to progressively overload your training, with a focus on aesthetic bodybuilding. Actually get a good workout that you feel hitting your body at home.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="program-panel" id="ag-outdoor">
+      <h1>AG Outdoor Workout Program</h1>
+      <p class="subtitle">Aesthetic bodybuilding programme using outdoor spaces and bodyweight training.</p>
+      <div class="content-box">
+        <div class="pdf-zone">
+          <div class="pdf-preview">
+            <img src="assets/images/Outdoor-Calisthenics-%20Program.png" alt="Outdoor workout program preview">
+          </div>
+          <div class="pdf-actions">
+            <a class="pdf-download" href="assets/images/Outdoor-Calisthenics-%20Program.png" download>Download Programme</a>
+          </div>
+        </div>
+        <div class="workout-text-zone">
+          <p class="placeholder-note"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="program-panel" id="nutritional-assessment">
+      <h1>Nutritional Assessment</h1>
+      <p class="subtitle">Diet assessment questionairre with tips based on your results, recipes and recommendations.</p>
+      <div class="content-box">
+        <div class="pdf-zone">
+          <div class="pdf-preview">
+            <img src="assets/images/6-Week-Nutrition-Reset.png" alt="Nutritional assessment preview">
+          </div>
+          <div class="pdf-actions">
+            <a class="pdf-download" href="assets/images/6-Week-Nutrition-Reset.png" download>Download Programme</a>
+          </div>
+        </div>
+        <div class="workout-text-zone">
+          <p class="placeholder-note"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="program-panel" id="six-pack-shortcut">
+      <h1>6 Pack Shortcuts</h1>
+      <p class="subtitle">Targeted core program - get a 6 pack in 10 minutes a day.</p>
+      <div class="content-box">
+        <div class="pdf-zone">
+          <div class="pdf-preview">
+            <img src="assets/images/6-Pack-Abs-Shortcuts.png" alt="6 Pack shortcuts preview">
+          </div>
+          <div class="pdf-actions">
+            <a class="pdf-download" href="assets/images/6-Pack-Abs-Shortcuts.png" download>Download Programme</a>
+          </div>
+        </div>
+        <div class="workout-text-zone">
+          <p class="placeholder-note"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="program-panel" id="book-mindset-nutrition">
+      <h1>Mindset and Nutrition</h1>
+      <p class="subtitle">Book</p>
+      <div class="content-box">
+        <div class="pdf-zone">
+          <div class="pdf-preview">
+            <img src="assets/images/mindset-and-nutrition-book-cover.png" alt="Mindset and Nutrition book cover preview">
+          </div>
+          <div class="pdf-actions">
+            <a class="pdf-link" href="assets/pdfs/Achieve%20Greatness%20Book%201%20-%20Nutrition%20%26%20Mindset.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+            <a class="pdf-download" href="assets/pdfs/Achieve%20Greatness%20Book%201%20-%20Nutrition%20%26%20Mindset.pdf" download>Download PDF</a>
+          </div>
+        </div>
+        <div class="workout-text-zone">
+          <p class="placeholder-note">Book 1 of my Achieve Greatness Training books, "Mindset and Nutrition" begins with some advice about how to break common limiting beleifs people have in life. It shows you how to form a habit tracker and a good day to day routine to get you on track. <br> <br>Then it details everything I learned as a qualified PT about nutrition in a simple and easy to understand way, like a freind talking to you and explaining the science in a way you understand as an everyday person. The book is designed to have short paragraphs, and no massive pages full of text. It is aimed to make learning fun, simple, and not intimidating. This is an interactive book, click a section you wish to visit in the table of contents to be brought to that page.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="program-panel" id="book-fitness-mastery">
+      <h1>Fitness Mastery</h1>
+      <p class="subtitle">Book</p>
+      <div class="content-box">
+        <div class="pdf-zone">
+          <div class="pdf-preview">
+            <img src="assets/images/fitness-mastery-book-cover.png" alt="Fitness Mastery book cover preview">
+          </div>
+          <div class="pdf-actions">
+            <a class="pdf-link" href="assets/pdfs/Achieve%20Greatness%20Book%202%20%28Fitness%20Mastery%29.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+            <a class="pdf-download" href="assets/pdfs/Achieve%20Greatness%20Book%202%20%28Fitness%20Mastery%29.pdf" download>Download PDF</a>
+          </div>
+        </div>
+        <div class="workout-text-zone">
+          <p class="placeholder-note">Book 2 of my Achieve Greatness training books. Fitness Mastery contains everything I learned about fitness and muscle building bodybuilding techniques as a Personal Trainer. It is strictly about fitness training and has pictures to help you understand. <br> <br> The book is designed to explain things very basically, and with images, with no large paragraphs to confuse you. Simply learn the old school and new school bodybuilding lessons and techniques Personal Trainers use without confusion. The book explains the concepts and the science to you like a freind would, in an everyday persons language. This is an interactive book, so click anywhere on the table of contents to be brought to that page.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="program-panel" id="book-life-coaching">
+      <h1>Life Coaching</h1>
+      <p class="subtitle">Book</p>
+      <div class="content-box">
+        <div class="pdf-zone">
+          <div class="pdf-preview">
+            <img src="assets/images/life-coaching-book-cover.png" alt="Life Coaching book cover preview">
+          </div>
+          <div class="pdf-actions">
+            <a class="pdf-link" href="assets/pdfs/Achieve%20Greatness%20Book%203%20-%20Motivationally%20Coaching%20Others.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+            <a class="pdf-download" href="assets/pdfs/Achieve%20Greatness%20Book%203%20-%20Motivationally%20Coaching%20Others.pdf" download>Download PDF</a>
+          </div>
+        </div>
+        <div class="workout-text-zone">
+          <p class="placeholder-note">Book 3 of my Achieve Greatness training books. This book is a bit different, split into two halves. The first section explains how to lead and fitness coach others for those that want to take some leadership and are thinking of exploring that side of things. The second part is a library of life coaching advice with many the common mindset issues covered. Overall the book aims to help those who want to become leaders in the first half, and is also helpful in the second half for those who want to learn the principles of life coaching to help themselves or others.   <br> <br>This is an interactive book, so click anywhere on the table of contents to be brought to that page within the book.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="program-panel" id="calorie-calculator">
+      <h1>Calorie Calculator</h1>
+      <p class="subtitle">Get a baseline daily calorie target based on goal, height, and body type</p>
+      <div class="content-box">
+        <div class="calc-form">
+
+          <div class="calc-field">
+            <label for="calcGoal">Goal</label>
+            <select id="calcGoal"></select>
+          </div>
+
+          <div class="calc-field">
+            <label for="calcHeight">Height</label>
+            <select id="calcHeight"></select>
+          </div>
+
+          <div class="calc-field">
+            <label for="calcSex">Sex</label>
+            <select id="calcSex">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+
+          <div class="calc-field">
+            <label for="calcWeight">Bodyweight</label>
+            <div class="calc-weight-row">
+              <input type="number" id="calcWeight" min="1" step="0.1" placeholder="e.g. 161">
+              <select id="calcWeightUnit">
+                <option value="lbs" selected>lbs</option>
+                <option value="kg">kg</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="calc-field">
+            <label for="calcFrame">Body Frame</label>
+            <select id="calcFrame">
+              <option value="-50">Smaller frame / smaller bones (-50 cal)</option>
+              <option value="0" selected>Average frame (no adjustment)</option>
+              <option value="50">Bigger frame / bigger bones (+50 cal)</option>
+            </select>
+          </div>
+
+          <label class="calc-checkbox">
+            <input type="checkbox" id="calcJob">
+            <span>I have a physically demanding job (manual labor 5–6 days/week, 20,000+ steps 5–6 days/week, or on my feet/stairs all day) — adds +200 cal</span>
+          </label>
+
+          <button class="calc-button" id="calcButton" type="button">Calculate</button>
+
+          <div class="calc-result" id="calcResult">
+            <div class="result-number" id="calcResultNumber">0 calories</div>
+            <div class="result-sub" id="calcResultSub"></div>
+            <div class="calc-breakdown" id="calcBreakdown"></div>
+          </div>
+
+          <p class="calc-note">This gives a rough starting calorie target based on your goal, height, sex, and body type. Adjust over time based on real-world results.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const themePreferenceKey = 'ag-check-in-theme';
+
+    function applyTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Toggle light mode' : 'Toggle dark mode');
+      themeToggle.setAttribute('title', theme === 'dark' ? 'Toggle light mode' : 'Toggle dark mode');
+      localStorage.setItem(themePreferenceKey, theme);
+    }
+    function getStoredTheme() {
+      const s = localStorage.getItem(themePreferenceKey);
+      if (s === 'light' || s === 'dark') return s;
+      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.body.getAttribute('data-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    applyTheme(getStoredTheme());
+
+    // Tab switching
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const panels = document.querySelectorAll('.program-panel');
+
+    tabButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach((b) => b.classList.remove('active'));
+        panels.forEach((p) => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    const varietyTabButtons = document.querySelectorAll('.variety-tab-btn');
+    const varietyPanels = document.querySelectorAll('.variety-tab-panel');
+
+    varietyTabButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        varietyTabButtons.forEach((b) => b.classList.remove('active'));
+        varietyPanels.forEach((p) => p.classList.remove('active'));
+        btn.classList.add('active');
+        const target = btn.dataset.varietyTab;
+        const matchingPanel = document.querySelector('[data-variety-panel="' + target + '"]');
+        if (matchingPanel) matchingPanel.classList.add('active');
+      });
+    });
+
+    const ag4GenderTabButtons = document.querySelectorAll('.ag4-gender-tab-btn');
+    const ag4GenderPanels = document.querySelectorAll('.ag4-gender-tab-panel');
+
+    ag4GenderTabButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const level = btn.dataset.level;
+        const matchingLevelButtons = document.querySelectorAll('.ag4-gender-tab-btn[data-level="' + level + '"]');
+        const matchingLevelPanels = document.querySelectorAll('.ag4-gender-tab-panel[data-gender-panel^="' + level + '-"]');
+
+        matchingLevelButtons.forEach((b) => b.classList.remove('active'));
+        matchingLevelPanels.forEach((p) => p.classList.remove('active'));
+
+        btn.classList.add('active');
+        const target = level + '-' + btn.dataset.gender;
+        const matchingPanel = document.querySelector('[data-gender-panel="' + target + '"]');
+        if (matchingPanel) matchingPanel.classList.add('active');
+      });
+    });
+
+    // ===== CALORIE CALCULATOR =====
+    const goalOptions = [
+      { value: 10, label: '10 — Moderate Weight Loss' },
+      { value: 11, label: '11 — Moderate Weight Loss' },
+      { value: 12, label: '12 — Mild Weight Loss' },
+      { value: 13, label: '13 — Maintenance' },
+      { value: 14, label: '14 — Maintenance' },
+      { value: 15, label: '15 — Maintenance' },
+      { value: 16, label: '16 — Moderate Weight Gain' },
+      { value: 17, label: '17 — Moderate Weight Gain' },
+      { value: 18, label: '18 — Moderate Weight Gain' },
+    ];
+
+    // Height adjustment table. 5'11" and 5'10" were not present in the
+    // source table — values are linearly interpolated between 6'0 (0)
+    // and 5'9 (-1.00) and flagged as estimated. Confirm/replace if you
+    // have the real figures.
+    const heightOptions = [
+      { label: "6'4\"", adj: 0.20 },
+      { label: "6'3\"", adj: 0.15 },
+      { label: "6'2\"", adj: 0.10 },
+      { label: "6'1\"", adj: 0.05 },
+      { label: "6'0\"", adj: 0.00 },
+      { label: "5'11\" (estimated)", adj: -0.33 },
+      { label: "5'10\" (estimated)", adj: -0.67 },
+      { label: "5'9\"", adj: -1.00 },
+      { label: "5'8\"", adj: -1.06 },
+      { label: "5'7\"", adj: -1.09 },
+      { label: "5'6\"", adj: -1.12 },
+      { label: "5'5\"", adj: -1.15 },
+      { label: "5'4\"", adj: -1.18 },
+      { label: "5'3\"", adj: -1.21 },
+      { label: "5'2\"", adj: -1.24 },
+      { label: "5'1\"", adj: -1.27 },
+      { label: "5'0\"", adj: -1.30 },
+    ];
+
+    const calcGoalSelect = document.getElementById('calcGoal');
+    const calcHeightSelect = document.getElementById('calcHeight');
+
+    if (calcGoalSelect) {
+      goalOptions.forEach((g) => {
+        const opt = document.createElement('option');
+        opt.value = g.value;
+        opt.textContent = g.label;
+        if (g.value === 12) opt.selected = true; // default: Mild Weight Loss
+        calcGoalSelect.appendChild(opt);
+      });
+    }
+
+    if (calcHeightSelect) {
+      heightOptions.forEach((h, i) => {
+        const opt = document.createElement('option');
+        opt.value = h.adj;
+        opt.textContent = h.label;
+        if (h.label.startsWith("5'9")) opt.selected = true; // default
+        calcHeightSelect.appendChild(opt);
+      });
+    }
+
+    const calcButton = document.getElementById('calcButton');
+    const calcWeightInput = document.getElementById('calcWeight');
+    const calcWeightUnit = document.getElementById('calcWeightUnit');
+
+    if (calcWeightUnit) {
+      calcWeightUnit.addEventListener('change', () => {
+        calcWeightInput.placeholder = calcWeightUnit.value === 'kg' ? 'e.g. 73' : 'e.g. 161';
+      });
+    }
+
+    if (calcButton) {
+      calcButton.addEventListener('click', () => {
+        const goal = parseFloat(calcGoalSelect.value);
+        const heightAdj = parseFloat(calcHeightSelect.value);
+        const sex = document.getElementById('calcSex').value;
+        const weightInput = parseFloat(calcWeightInput.value);
+        const unit = calcWeightUnit.value;
+        // 1 kg = 2.20462 lbs — convert to lbs since the formula is built on lbs
+        const weight = unit === 'kg' ? weightInput * 2.20462 : weightInput;
+        const frameAdj = parseFloat(document.getElementById('calcFrame').value);
+        const jobAdj = document.getElementById('calcJob').checked ? 200 : 0;
+
+        const resultBox = document.getElementById('calcResult');
+        const resultNumber = document.getElementById('calcResultNumber');
+        const resultSub = document.getElementById('calcResultSub');
+        const breakdown = document.getElementById('calcBreakdown');
+
+        if (!weightInput || weightInput <= 0) {
+          resultBox.classList.add('show');
+          resultNumber.textContent = 'Enter your bodyweight';
+          resultSub.textContent = '';
+          breakdown.innerHTML = '';
+          return;
+        }
+
+        const runningNumber = goal + heightAdj;
+        let calories = runningNumber * weight;
+        const beforeExtras = calories;
+
+        calories += frameAdj;
+        calories += jobAdj;
+
+        const femaleAdj = sex === 'female' ? -100 : 0;
+        calories += femaleAdj;
+
+        const globalAdj = 150;
+        calories += globalAdj;
+
+        const rounded = Math.round(calories / 50) * 50;
+
+        resultBox.classList.add('show');
+        resultNumber.textContent = `${Math.round(rounded).toLocaleString()} calories/day`;
+        resultSub.textContent = `(unrounded: ${Math.round(calories).toLocaleString()} calories/day)`;
+
+        breakdown.innerHTML = `
+          ${unit === 'kg' ? `Bodyweight: ${weightInput} kg → ${weight.toFixed(1)} lbs<br>` : ''}
+          Goal number: ${goal} ${heightAdj >= 0 ? '+' : ''}${heightAdj.toFixed(2)} (height) = ${runningNumber.toFixed(2)}<br>
+          ${runningNumber.toFixed(2)} × ${weight.toFixed(1)} lbs = ${Math.round(beforeExtras).toLocaleString()} calories<br>
+          ${frameAdj !== 0 ? `Body frame adjustment: ${frameAdj > 0 ? '+' : ''}${frameAdj} calories<br>` : ''}
+          ${jobAdj !== 0 ? `Physically demanding job: +${jobAdj} calories<br>` : ''}
+          ${femaleAdj !== 0 ? `Female adjustment: ${femaleAdj} calories<br>` : ''}
+          Safety adjustment: +${globalAdj} calories<br>
+          Rounded to nearest 50: <strong>${Math.round(rounded).toLocaleString()} calories/day</strong>
+        `;
+      });
+    }
+  </script>
+  <script>
+    // Program Selector logic
+    console.log('Program Selector script block start');
+    window.addEventListener('error', (ev) => { console.error('Global error captured:', ev.error || ev.message); });
+    window.addEventListener('DOMContentLoaded', () => { console.log('DOMContentLoaded fired'); });
+    // Set this to your Program Selector Google Apps Script URL (separate sheet)
+    const PROGRAM_GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz8b7EhcgalUrbUdZ2soJqUn5ruFl9RaFVhNtVJLCFxgQsOXBF-O2-Je3miyZAGIFJ4/exec'; 
+
+    // Simplified flow elements
+    const primaryChoiceEl = document.getElementById('primaryChoice');
+    const generalGroup = document.getElementById('generalGroup');
+    const generalDaysWrap = document.getElementById('generalDaysWrap');
+    const sexEl = document.getElementById('sex');
+    const experienceEl = document.getElementById('experience');
+    const preferenceEl = document.getElementById('preference');
+    const workoutLengthEl = document.getElementById('workoutLength');
+    const daysPerWeekEl = document.getElementById('daysPerWeek');
+    const injuryWrap = document.getElementById('injuryWrap');
+
+    const athleteGroup = document.getElementById('athleteGroup');
+    const athleteSexEl = document.getElementById('athleteSex');
+    const athleteChoiceEl = document.getElementById('athleteChoice');
+
+    // Show/hide groups depending on primary choice
+    if (primaryChoiceEl) {
+      console.log('Program Selector: primaryChoice element found');
+      primaryChoiceEl.addEventListener('change', () => {
+        try {
+          validateFormAndToggleButton();
+          const v = primaryChoiceEl.value;
+          console.log('Program Selector: primary changed to', v);
+          if (v === 'general') {
+        generalGroup.classList.remove('hidden');
+        document.getElementById('preferenceWrap').classList.remove('hidden');
+        document.getElementById('workoutLengthWrap').classList.remove('hidden');
+        document.getElementById('injuryWrap').classList.remove('hidden');
+        document.getElementById('experienceWrap').classList.remove('hidden');
+        generalDaysWrap.classList.remove('hidden');
+        athleteGroup.classList.add('hidden');
+        document.getElementById('athleteChoiceWrap').classList.add('hidden');
+              } else if (v === 'athlete') {
+                // athlete
+                generalGroup.classList.add('hidden');
+                document.getElementById('preferenceWrap').classList.add('hidden');
+                document.getElementById('workoutLengthWrap').classList.add('hidden');
+                // show injuries for athletes as well — athletes can have injuries
+                document.getElementById('injuryWrap').classList.remove('hidden');
+                document.getElementById('experienceWrap').classList.add('hidden');
+                // clear preference and experience values when hiding to avoid stale values
+                try { preferenceEl.value = ''; experienceEl.value = ''; workoutLengthEl.value = ''; } catch (e) {}
+                generalDaysWrap.classList.add('hidden');
+                athleteGroup.classList.remove('hidden');
+                document.getElementById('athleteChoiceWrap').classList.remove('hidden');
+          } else {
+        // empty or placeholder
+        generalGroup.classList.add('hidden');
+        document.getElementById('preferenceWrap').classList.add('hidden');
+        document.getElementById('workoutLengthWrap').classList.add('hidden');
+        document.getElementById('injuryWrap').classList.add('hidden');
+        document.getElementById('experienceWrap').classList.add('hidden');
+        try { preferenceEl.value = ''; experienceEl.value = ''; workoutLengthEl.value = ''; }
+        catch (e) {}
+        generalDaysWrap.classList.add('hidden');
+        athleteGroup.classList.add('hidden');
+        document.getElementById('athleteChoiceWrap').classList.add('hidden');
+      }
+        } catch (err) {
+          console.error('Error in primaryChoice change handler', err);
+        }
+      });
+    } else {
+      console.warn('Program Selector: primaryChoice element NOT found');
+    }
+
+    function collectFormValues() {
+      const f = document.getElementById('programForm');
+      const fd = new FormData(f);
+      const primary = fd.get('primaryChoice');
+      const injuries = [];
+      for (const v of fd.getAll('injury')) injuries.push(v);
+      if (primary === 'athlete') {
+        return {
+          primary: 'athlete',
+          sex: fd.get('athleteSex'),
+          daysPerWeek: fd.get('athleteChoice'),
+          injuries
+        };
+      }
+      return {
+        primary: 'general',
+        sex: fd.get('sex'),
+        experience: fd.get('experience'),
+        preference: fd.get('preference'),
+        workoutLength: fd.get('workoutLength'),
+        daysPerWeek: fd.get('daysPerWeek'),
+        injuries
+      };
+    }
+
+    // Enable the main button only when minimal required values are selected
+    const getProgramButton = document.getElementById('getProgramButton');
+    function validateFormAndToggleButton() {
+      const vals = collectFormValues();
+      if (!getProgramButton) return;
+      if (!vals.primary) { getProgramButton.disabled = true; return; }
+      if (vals.primary === 'athlete') {
+        if (!vals.daysPerWeek || !vals.sex) { getProgramButton.disabled = true; return; }
+        getProgramButton.disabled = false; return;
+      }
+      // general
+      if (!vals.sex || !vals.daysPerWeek || !vals.preference || !vals.experience) { getProgramButton.disabled = true; return; }
+      getProgramButton.disabled = false;
+    }
+
+    function updatePreferenceOptions() {
+      if (!preferenceEl) return;
+
+      const sex = sexEl ? sexEl.value : '';
+      const exp = experienceEl ? experienceEl.value : '';
+      const currentValue = preferenceEl.value;
+
+      let allowedValues = ['full_body', 'unsure'];
+
+      if (sex === 'female') {
+        if (exp === 'advanced') {
+          allowedValues = ['full_body', 'lower_only', 'splits', 'unsure'];
+        } else if (exp === 'intermediate') {
+          allowedValues = ['full_body', 'lower_only', 'unsure'];
+        } else {
+          allowedValues = ['full_body', 'lower_only', 'unsure'];
+        }
+      } else {
+        allowedValues = ['full_body', 'splits', 'unsure'];
+      }
+
+      Array.from(preferenceEl.options).forEach(option => {
+        const isAllowed = allowedValues.includes(option.value);
+        option.hidden = !isAllowed;
+        option.disabled = !isAllowed;
+      });
+
+      if (!allowedValues.includes(currentValue)) {
+        preferenceEl.value = allowedValues[0];
+      }
+    }
+
+    // Listen for changes to revalidate (guarded)
+    if (primaryChoiceEl) primaryChoiceEl.addEventListener('change', () => {
+      updatePreferenceOptions();
+      validateFormAndToggleButton();
+    });
+    if (sexEl) sexEl.addEventListener('change', () => {
+      updatePreferenceOptions();
+      validateFormAndToggleButton();
+    });
+    if (experienceEl) experienceEl.addEventListener('change', () => {
+      updatePreferenceOptions();
+      validateFormAndToggleButton();
+    });
+    if (workoutLengthEl) workoutLengthEl.addEventListener('change', validateFormAndToggleButton);
+    if (daysPerWeekEl) daysPerWeekEl.addEventListener('change', validateFormAndToggleButton);
+    if (athleteSexEl) athleteSexEl.addEventListener('change', validateFormAndToggleButton);
+    if (athleteChoiceEl) athleteChoiceEl.addEventListener('change', validateFormAndToggleButton);
+    if (preferenceEl) preferenceEl.addEventListener('change', validateFormAndToggleButton);
+    // Initial validation pass
+    updatePreferenceOptions();
+    validateFormAndToggleButton();
+
+    // Map injuries to doc names
+    const INJURY_DOC_MAP = {
+      'Knee': 'Knee Injury Programming',
+      'Hip': 'Hip Injury Programming',
+      'Ankle': 'Ankle / Foot Injury Programming',
+      'Lower back': 'Lower Back Injury Programming',
+      'Shoulder': 'Shoulder Injury Programming',
+      'Elbow': 'Elbow Injury Programming',
+      'Wrist': 'Wrist / Hand Injury Programming',
+      'Neck': 'Neck Injury Programming'
+    };
+
+    function pickProgram(vals) {
+      // returns { programme, popupText, additionalDocs: [] }
+      const exp = vals.experience;
+      const sex = vals.sex;
+      const days = vals.daysPerWeek;
+      const pref = vals.preference;
+      const len = vals.workoutLength;
+      const athlete = vals.athlete === 'yes';
+      const athletePref = vals.athletePref;
+
+      // Athlete override
+      if (athlete) {
+        if (athletePref === '2-3-full') {
+          return { programme: 'Male Intermediate Upper / Lower Supersets Full Body', popup: "You'll be training 2–3 times per week alongside your other sport, so we've recommended the Intermediate Upper / Lower Supersets programme. Perform the workouts 2–3 times per week and allow your other sport to provide additional activity.", additionalDocs: [] };
+        }
+        if (athletePref === '5-intense') {
+          return { programme: 'Advanced 5-Day Programme', popup: 'We recommend the Advanced 5-Day programme to match your high training availability alongside sport.', additionalDocs: [] };
+        }
+      }
+
+      // Female logic
+      if (sex === 'female') {
+        if (exp === 'beginner') {
+          if (days === '2') {
+            return { programme: pref === 'lower_only' ? 'Female Beginner Lower Only' : 'Female Beginner Full Body', popup: 'You will complete your selected 2 sessions per week; skip the third programmed session each week.', additionalDocs: [] };
+          }
+          if (days === '3' || days === '4' || days === '5' || days === '6') {
+            if (pref === 'lower_only') {
+              return { programme: 'Female Beginner Lower Only', popup: 'Follow the Female Beginner Lower Only 3x a week programme. Use your extra workout days for active recovery, such as a sports class, a run, some yoga, pilates, or stretching for mobility and recovery.', additionalDocs: [] };
+            }
+            return { programme: 'Female Beginner Full Body', popup: 'Keep the 3 programmed sessions as your main strength training and use extra days for low-pressure activity or cardio.', additionalDocs: [] };
+          }
+        }
+        if (exp === 'intermediate') {
+          const timeNote = len === '30-45'
+            ? ' To get the workouts done in 30 minutes, lighten the weights and take shorter rest breaks in between sets.'
+            : '';
+
+          if (pref === 'lower_only') {
+            if (days === '2') {
+              return { programme: 'Intermediate Female Lower Only — 3x/week (reduced to 2)', popup: `For 2 days: use the Intermediate Female Lower Only programme but remove one workout to make 2 sessions per week instead of 3.${timeNote}`, additionalDocs: [] };
+            }
+            if (days === '4' || days === '5' || days === '6') {
+              return { programme: 'Intermediate Female Lower Only — 3x/week', popup: `For 4+ days: keep the 3-day Lower Only plan as your main strength structure, then repeat a lower-body session on the extra workout day(s), or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${timeNote}`, additionalDocs: [] };
+            }
+            return { programme: 'Intermediate Female Lower Only — 3x/week', popup: `Follow the 3x/week Lower Only programme; use your extra workout days for active recovery such as a sports class, a run, some yoga, pilates, or stretching for mobility and recovery.${timeNote}`, additionalDocs: [] };
+          }
+
+          if (pref === 'splits') {
+            if (days === '2') {
+              return { programme: 'Intermediate Female Upper / Lower Split — 3x/week (reduced to 2)', popup: `For 2 days: use the Intermediate Female Split programme but remove one workout to make 2 sessions per week instead of 3.${timeNote}`, additionalDocs: [] };
+            }
+            if (days === '4' || days === '5' || days === '6') {
+              return { programme: 'Intermediate Female Upper / Lower Split — 3x/week', popup: `For 4+ days: keep the 3-day split as your core structure, then repeat a split workout on your extra workout days, or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${timeNote}`, additionalDocs: [] };
+            }
+            return { programme: 'Intermediate Female Upper / Lower Split — 3x/week', popup: `Follow the 3x/week split programme and keep your sessions focused on quality and recovery.${timeNote}`, additionalDocs: [] };
+          }
+
+          if (pref === 'unsure') {
+            if (days === '2') {
+              return { programme: 'Intermediate Female Full Body — 3x/week (reduced to 2)', popup: `For 2 days: use the Intermediate Female Full Body programme but remove one weekly workout to make 2 sessions per week instead of 3.${timeNote}`, additionalDocs: [] };
+            }
+            if (days === '4' || days === '5' || days === '6') {
+              return { programme: 'Intermediate Female Full Body — 3x/week', popup: `For 4+ days: keep the 3-day Full Body plan as your main strength work, then repeat a workout on the extra workout day(s), or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${timeNote}`, additionalDocs: [] };
+            }
+            return { programme: 'Intermediate Female Full Body — 3x/week', popup: `Follow the 3x/week Full Body programme.${timeNote}`, additionalDocs: [] };
+          }
+
+          if (days === '2') {
+            return { programme: 'Intermediate Female Full Body — 3x/week (reduced to 2)', popup: `For 2 days: use the Intermediate Female Full Body programme but remove one weekly workout to make 2 sessions per week instead of 3.${timeNote}`, additionalDocs: [] };
+          }
+          if (days === '4' || days === '5' || days === '6') {
+            return { programme: 'Intermediate Female Full Body — 3x/week', popup: `For 4+ days: keep the 3-day Full Body plan as your main strength work, then repeat a workout on the extra workout day(s), or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${timeNote}`, additionalDocs: [] };
+          }
+          return { programme: 'Intermediate Female Full Body — 3x/week', popup: `Follow the 3x/week Full Body programme.${timeNote}`, additionalDocs: [] };
+        }
+        // advanced female
+        if (exp === 'advanced') {
+          if (days === '2') {
+            const timeNote = len === '30-45'
+              ? ' With 30 - 45 minutes, you cannot sit on your phone for long in between sets, you may have to reduce the amount of sets per exercise by 1 set, and you may have to lighten weights and shorten rest times. If you really have days where you only have 30 minutes, you can also go in and do a basic default day: do 3 sets of Barbell Squats, 3 Sets of Lateral Pulldowns, and running on the Treadmill for the time remaining.'
+              : '';
+            const shortSessionNote = len === '30-45'
+              ? ' To get the workouts done in 30 minutes, lighten the weights and take shorter rest breaks in between sets.'
+              : '';
+            const unsureTimeNote = len === 'unsure'
+              ? ' Since you are unsure about the time you want to workout, just test the programme and workout for however long works for you. If you need to shorten the workouts to half an hour, reduce the number of sets you do, or lighten your weights to take faster rest periods. The programme will still be effective.'
+              : '';
+            return { programme: 'Intermediate Female Full Body — 3x/week (reduced to 2)', popup: `Use the Intermediate Full Body programme but remove one weekly workout to make 2 sessions per week.${timeNote}${shortSessionNote}${unsureTimeNote}`, additionalDocs: [] };
+          }
+          if (days === '3' || days === '4' || days === '5' || days === '6') {
+            const shortSessionNote = len === '30-45'
+              ? ' To get the workouts done in 30 minutes, lighten the weights and take shorter rest breaks in between sets.'
+              : '';
+            const unsureTimeNote = len === 'unsure'
+              ? ' Since you are unsure about the time you want to workout, just test the programme and workout for however long works for you. If you need to shorten the workouts to half an hour, reduce the number of sets you do, or lighten your weights to take faster rest periods. The programme will still be effective.'
+              : '';
+            const basePopup = days === '5' ? 'Follow the Advanced Female 5-Day Programme.' : 'Use the Advanced 5-Day Programme and remove or adapt days to match your selected frequency.';
+            return { programme: 'Advanced Female 5-Day Programme', popup: `${basePopup}${shortSessionNote}${unsureTimeNote}`, additionalDocs: [] };
+          }
+        }
+      }
+
+      // Male logic
+      if (sex === 'male') {
+        if (exp === 'beginner') {
+          const unsurePreferenceAndTime = pref === 'unsure' && len === 'unsure';
+          if (days === '2') {
+            if (unsurePreferenceAndTime) {
+              return { programme: '30 Minute Workouts For Busy People — Beginner 3x A Week', popup: 'Your training preference and session length are still uncertain, so the beginner 30-minute busy-people plan is the best low-pressure default for a beginner male.', additionalDocs: [] };
+            }
+            const splitReminder = pref === 'splits'
+              ? " Although you may prefer a split programme, a split is not ideal when training only twice per week because each muscle group may not be trained frequently enough."
+              : '';
+            const timeNote = len === '30-45'
+              ? " To get this done in 45 minutes, you'll need to keep rest periods short, avoid sitting around between exercises, and you may need to use 2 working sets per exercise. Occasionally, try to hit closer to 60 minutes when you can for more growth."
+              : pref === 'splits' && len === '60'
+                ? ' To extend this workout to 1 hour, you can add some extra cardio on a cardio machine or do an extra set per exercise.'
+                : '';
+            return { programme: 'Beginner Full Body Upper Lower Supersets', popup: `You've selected 2 training days per week.${splitReminder} We've therefore recommended Full Body training twice per week so that your whole body receives regular training and you can maintain a consistent level of progress.${timeNote}`, additionalDocs: [] };
+          }
+          if (days === '3') {
+            if (unsurePreferenceAndTime) return { programme: '30 Minute Workouts For Busy People — Beginner 3x A Week', popup: '30 minute beginner 3x/week programme for busy people; this is the best match when you are unsure about preference or time.', additionalDocs: [] };
+            if (pref === 'full_body') return { programme: 'Beginner Upper Lower Supersets Full Body', popup: 'Recommended Beginner Upper Lower Supersets Full Body for Full Body preference.', additionalDocs: [] };
+            if (pref === 'splits' && (len === '30-45' || len === '60' || len === 'unsure')) {
+              const splitOneHourNote = pref === 'splits' && len === '60' ? ' To extend this workout to 1 hour, you can add some extra cardio on a cardio machine or do an extra set per exercise.' : '';
+              return { programme: '30 Minute Workouts For Busy People — Beginner 3x A Week', popup: `30 minute beginner 3x/week programme for busy people.${splitOneHourNote}`, additionalDocs: [] };
+            }
+            return { programme: 'Beginner Upper Lower Supersets Full Body', popup: 'Beginner Upper Lower Supersets Full Body.', additionalDocs: [] };
+          }
+          if (days === '4') {
+            if (unsurePreferenceAndTime) return { programme: '30 Minute Workouts For Busy People', popup: 'Use the 30 Minute Workouts programme; add an extra workout as needed and keep things balanced. This is the safest default when you are unsure about preference or time.', additionalDocs: [] };
+            if (pref === 'splits' && (len === '30-45' || len === '60' || len === 'unsure')) {
+              const splitOneHourNote = pref === 'splits' && len === '60' ? ' To extend this workout to 1 hour, you can add some extra cardio on a cardio machine or do an extra set per exercise.' : '';
+              return { programme: '30 Minute Workouts For Busy People', popup: `Use the 30 Minute Workouts programme; add an extra workout as needed and keep things balanced.${splitOneHourNote}`, additionalDocs: [] };
+            }
+            if (len === '30-45') return { programme: '30 Minute Workouts For Busy People', popup: 'Use the 30 Minute Workouts programme; add an extra workout as needed and keep things balanced.', additionalDocs: [] };
+            return { programme: 'Beginner Upper Lower Supersets Full Body', popup: 'Beginner Upper Lower Supersets Full Body. Try to keep things balanced and add extra workout days thoughtfully.', additionalDocs: [] };
+          }
+          if (days === '5' || days === '6') {
+            if (unsurePreferenceAndTime) return { programme: '30 Minute Workouts For Busy People', popup: 'Use the 30 Minute Workouts programme and choose additional balanced workouts for extra days. This is the preferred default when preference and workout length are still uncertain.', additionalDocs: [] };
+            if (pref === 'splits' && (len === '30-45' || len === '60' || len === 'unsure')) {
+              const splitOneHourNote = pref === 'splits' && len === '60' ? ' To extend this workout to 1 hour, you can add some extra cardio on a cardio machine or do an extra set per exercise.' : '';
+              return { programme: '30 Minute Workouts For Busy People', popup: `Use the 30 Minute Workouts programme and choose additional balanced workouts for extra days.${splitOneHourNote}`, additionalDocs: [] };
+            }
+            if (len === '30-45') return { programme: '30 Minute Workouts For Busy People', popup: 'Use the 30 Minute Workouts programme and choose additional balanced workouts for extra days.', additionalDocs: [] };
+            return { programme: 'Beginner Upper Lower Supersets Full Body', popup: 'Use Beginner Upper Lower Supersets Full Body as your core; choose extra workouts for additional workout days.', additionalDocs: [] };
+          }
+        }
+
+        if (exp === 'intermediate') {
+          if (days === '2') return { programme: 'Intermediate Upper Lower Supersets', popup: "Use the Intermediate Upper Lower Supersets programme, but remove one workout each week so that you complete 2 sessions rather than 3.", additionalDocs: [] };
+          if (days === '3') {
+            if (pref === 'full_body') return { programme: 'Intermediate Upper Lower Supersets', popup: 'Recommended: Intermediate Upper Lower Supersets for balanced growth.', additionalDocs: [] };
+            return { programme: 'Intermediate Upper Lower Supersets (recommended) or Intermediate Male 30 Minute Workouts ForBusy People (alternative)', popup: 'Recommended: Intermediate Upper Lower Supersets. Alternative: 4-Day Busy People if you prefer splits.', additionalDocs: [] };
+          }
+          if (days === '4') return { programme: 'Intermediate Male 30 Minute Workouts For Busy People 4-Day', popup: 'Intermediate 4-Day Busy People programme.', additionalDocs: [] };
+          if (days === '5') return { programme: 'Intermediate Male 30 Minute Workouts For Busy People 4-Day', popup: 'Complete 4 programmed days and add an additional 30 Minute Workouts Push session.', additionalDocs: [] };
+          if (days === '6') return { programme: 'Intermediate Male 30 Minute Workouts For Busy People 4-Day', popup: 'Complete 4 programmed days and add Push and Pull days from the 30 Minute Workouts programme.', additionalDocs: [] };
+        }
+
+        if (exp === 'advanced') {
+          if (days === '2' || days === '3') {
+            const popupBase = "Intermediate Upper / Lower Supersets is the better fit for 2–3 days; complete 2 of the 3 weekly workouts if using 2 days.";
+            const halfHourNote = (pref === 'unsure' || pref === 'splits') && length === '30-45'
+              ? ' To complete these workouts in half an hour, drop off a set or two, lighten the weights and reduce rest times.'
+              : '';
+            const splitNote = pref === 'splits'
+              ? ' Although you have selected Splits as a preference, in 2 to 3 days a week, a full body workout is better suited to your goals, hitting each muscle group a minimum of twice a week.'
+              : '';
+            return { programme: 'Intermediate Upper / Lower Supersets 3x/week', popup: `${popupBase}${halfHourNote}${splitNote}`, additionalDocs: [] };
+          }
+          if (days === '4') return { programme: 'Advanced 5-Day Programme (or Upper / Lower route)', popup: 'Option 1: Advanced 5-Day minus one leg day for upper-body focus. Option 2: Intermediate Upper / Lower Supersets plus one Intermediate Male 30 Minute Workouts For advancBusy People Push workout for balanced development.', additionalDocs: [] };
+          if (days === '5' || days === '6') return { programme: 'Advanced 5-Day Programme', popup: 'Advanced 5-Day Programme as primary structure; for 6+ days consider PPLPPL or add extra sessions carefully and monitor recovery.', additionalDocs: [] };
+        }
+      }
+
+      // Fallback
+      return { programme: 'AG4 – General Programme', popup: 'Based on your answers, we recommend starting with the AG4 general programme and adapting as needed.', additionalDocs: [] };
+    }
+
+    // Simplified recommendation for the reduced questionnaire
+    function pickProgramSimplified(vals) {
+      const docs = buildAdditionalDocsList(vals.injuries || []);
+      const exp = vals.experience || 'intermediate';
+      if (vals.primary === 'athlete') {
+          const aDays = vals.daysPerWeek;
+          const sex = vals.sex || 'male';
+          // Sex-specific athlete guidance
+          if (aDays === '2') {
+            if (sex === 'female') {
+              return { programme: 'Intermediate Female Full Body — 3x/week (reduced to 2) or Intermediate Lower Only (reduced to 2)', popup: "For 2 days: use the Intermediate Full Body 3x/week programme but drop one weekly session (complete 2 of 3), or follow the Intermediate Lower-Only option and drop one of its sessions. This preserves progress while matching your availability.", additionalDocs: docs };
+            }
+            return { programme: 'Intermediate Upper Lower Supersets Full Body 3x/week (use 2 of 3 days)', popup: 'For 2 days: use the 3x/week Full Body / Upper-Lower intermediate plan but perform 2 of the 3 weekly workouts (take one programmed day off). This preserves structure while matching availability.', additionalDocs: docs };
+          }
+          if (aDays === '3') {
+            if (sex === 'female') {
+              return { programme: 'Intermediate Female Full Body — 3x/week', popup: 'Recommended: Female Full Body 3x/week alongside your sport — prioritise recovery and treat workout sessions as complementary to your sport.', additionalDocs: docs };
+            }
+            return { programme: 'Intermediate Upper / Lower Supersets', popup: 'Recommended: Intermediate Upper / Lower Supersets for 3 sessions per week alongside sport.', additionalDocs: docs };
+          }
+          if (aDays === '4') {
+            if (sex === 'female') {
+              return { programme: 'Modified Advanced Female 5-Day (upper/upper/lower/lower)', popup: "For 4 days: Pick the 5-day Advanced Female Athlete programme but modify to upper / upper / lower / lower — drop one lower day from the 5-day layout. Alternatively, do upper + three lowers if you want to prioritise lower body.", additionalDocs: docs };
+            }
+            return { programme: 'Intermediate Full Body Mens 3x A Week Upper Lower Supersets Programme', popup: "For 4 days: follow the intermediate full body upper lower supersets for men, this is 3x a week, but add one Push Day workout from the 30 minute workouts for busy people in the Beginners section for extra work.",  additionalDocs: docs };
+          }
+          if (aDays === '5') {
+            if (sex === 'female') {
+              return { programme: 'Advanced Female 5-Day Programme', popup: 'Recommended: Advanced Female 5-Day Programme for high-frequency training; monitor recovery and adjust accessory work as needed.', additionalDocs: docs };
+            }
+            return { programme: 'Advanced 5-Day Programme', popup: 'Recommended: Advanced 5-Day Programme for high-frequency training; aim for 70% adherence to this programme as this is an intense programme. On days you feel tired from your sport, it is acceptable to reduce the amount of sets, use lighter weights, or skip the cardio on this programme. The programme should be used in synergy with your sport and recovery.', additionalDocs: docs };
+          }
+          // 6+
+          if (sex === 'female') {
+            return { programme: 'Advanced Female 5-Day Programme + Active Rest Day', popup: 'For 6+ days: run the Advanced Female 5-Day Programme and assign a 6th day for cardio, exercise classes, mobility or yoga to support recovery and conditioning.', additionalDocs: docs };
+          }
+          return { programme: 'Advanced 5-Day Programme (PPLPPL)', popup: 'For 6+ days: run the Advanced 5-Day programme as a PPL PPL — repeat a leg day on your 6th day so you end up with two leg-focused sessions. Use the 5-day plan as the base and repeat the leg day for additional volume.', additionalDocs: docs };
+        }
+
+      // general flow
+      const sex = vals.sex || 'male';
+      const days = vals.daysPerWeek;
+      const pref = vals.preference || 'unsure';
+      const length = vals.workoutLength || '30-45';
+      const injuries = vals.injuries || [];
+      // Build additional docs list
+      const addDocs = buildAdditionalDocsList(injuries);
+
+      // Helper to return with docs attached
+      function withDocs(obj) { obj.additionalDocs = addDocs; return obj; }
+
+      // Special-case recommendation for short full-body programmes on 4–6 days per week — male only
+      if (sex === 'male' && length === '30-45' && pref === 'full_body' && (days === '4' || days === '5' || days === '6')) {
+        const shortFullBodyProgram = exp === 'beginner'
+          ? 'Beginner Upper Lower Supersets Full Body — 3x/week'
+          : 'Intermediate Upper / Lower Supersets — 3x/week';
+
+        return withDocs({
+          programme: shortFullBodyProgram,
+          popup: 'Full body workouts can often take longer than 30 minutes, especially when you are trying to train the whole body effectively. If you choose 30-minute sessions, you will need to move through the sets a little quicker and avoid going as heavy as you would on a longer workout. We would recommend doing the 3 days a week as your main training structure. On your extra days, you can either repeat a workout from the programme, or choose a light jog, a sports class, or some stretching / yoga for recovery. Alternate Programme: If you are open to trying a Split programme, 30 Minute Workouts For Busy People provides a true 30 minute workout structure if short workouts are really important to you. ',
+        });
+      }
+
+      // Use experience branches
+      if (exp === 'beginner') {
+        if (sex === 'male') {
+          // Beginner male logic
+          const unsurePreferenceAndTime = pref === 'unsure' && length === 'unsure';
+          if (days === '2') {
+            if (unsurePreferenceAndTime) {
+              return withDocs({ programme: '30 Minute Workouts For Busy People — Beginner 3x A Week', popup: 'Your training preference and session length are still uncertain, so the beginner 30-minute busy-people plan is the best low-pressure default for a beginner male.' });
+            }
+            const splitReminder = pref === 'splits'
+              ? " Although you may prefer a split programme, a split is not ideal when training only twice per week because each muscle group may not be trained frequently enough."
+              : '';
+            const timeNote = length === '30-45'
+              ? " To get this done in 45 minutes, you'll need to keep rest periods short, avoid sitting on the phone between exercises, and you may need to use 2 working sets per exercise. Occasionally, try to hit closer to 60 minutes whenever you can for more growth. Alternatively you can select the Beginner 30 Minute Workouts for Busy People Programme and do the Push & Pull Day. This is a low pressure way to workout, but growth will be slower."
+              : pref === 'splits' && length === '60'
+                ? ' To extend this workout to 1 hour, you can add some extra cardio on a cardio machine or do an extra set per exercise.'
+                : '';
+            return withDocs({ programme: 'Beginner Full Body Upper Lower Supersets', popup: `You've selected 2 training days per week.${splitReminder} We've therefore recommended Full Body training twice per week so that your whole body receives regular training and you can maintain a consistent level of progress.${timeNote}` });
+          }
+          if (days === '3') {
+            if (unsurePreferenceAndTime) return withDocs({ programme: '30 Minute Workouts For Busy People — Beginner 3x A Week', popup: 'Use the 30 Minute Workouts For Busy People — Beginner 3x/week. This is the best match when you are unsure about preference or time.' });
+            if (pref === 'full_body') {
+              const fullBodyTimeNote = length === '30-45'
+                ? ' If you really want to save time, and are able to compromise on Full Body training for a new approach, consider experimenting with our 30 Minute Workouts For Busy People Split Routine, it is the number one choice for those who want to save time in the gym.'
+                : '';
+              return withDocs({ programme: 'Beginner Upper Lower Supersets Full Body', popup: `Recommended Beginner Upper Lower Supersets Full Body for Full Body preference.${fullBodyTimeNote}` });
+            }
+            if (pref === 'splits' && (length === '30-45' || length === '60' || length === 'unsure')) {
+              const splitOneHourNote = pref === 'splits' && length === '60' ? ' To extend this workout to 1 hour, you can add some extra cardio on a cardio machine or do an extra set per exercise.' : '';
+              return withDocs({ programme: '30 Minute Workouts For Busy People — Beginner 3x A Week', popup: `Use the 30 Minute Workouts For Busy People — Beginner 3x/week.${splitOneHourNote}` });
+            }
+            return withDocs({ programme: 'Beginner Upper Lower Supersets Full Body', popup: 'Recommended: Beginner Upper Lower Supersets Full Body.' });
+          }
+          if (days === '4') {
+            if (unsurePreferenceAndTime) return withDocs({ programme: '30 Minute Workouts For Busy People', popup: 'Use the 30 Minute Workouts programme; add an extra workout day from the program as needed. I reccommend adding an extra Push Day. This is the safest default when you are unsure about preference or time.' });
+            if (pref === 'splits' && (length === '30-45' || length === '60' || length === 'unsure')) {
+              const splitOneHourNote = pref === 'splits' && length === '60' ? ' To extend this workout to 1 hour, you can add some extra cardio on a cardio machine or do an extra set per exercise.' : '';
+              return withDocs({ programme: '30 Minute Workouts For Busy People', popup: `Use the 30 Minute Workouts programme; add an extra workout day from the program as needed. I reccommend adding an extra Push Day.${splitOneHourNote}` });
+            }
+            if (length === '30-45') return withDocs({ programme: '30 Minute Workouts For Busy People', popup: 'Use the 30 Minute Workouts programme; add an extra workout day from the program as needed. I reccommend adding an extra Push Day.' });
+            return withDocs({ programme: 'Beginner Upper Lower Supersets Full Body', popup: 'Use Beginner Upper Lower Supersets Full Body 3x A Week as your core programme; repeat a workout in this programme on your fourth day.' });
+          }
+          if (days === '5') {
+            if (unsurePreferenceAndTime) return withDocs({ programme: '30 Minute Workouts For Busy People', popup: 'Use the 30 Minute Workouts programme and repeat some workouts currently in the programme for extra days. I reccommend focusing on extra Push and Pull days as building an aesthetic upper body is a priority for most men when it comes to physique. This is the preferred default when preference and workout length are still uncertain.' });
+            if (pref === 'splits' && (length === '30-45' || length === '60' || length === 'unsure')) {
+              const splitOneHourNote = pref === 'splits' && length === '60' ? ' To extend this workout to 1 hour, you can add some extra cardio on a cardio machine or do an extra set per exercise.' : '';
+              return withDocs({ programme: '30 Minute Workouts For Busy People', popup: `Use the 30 Minute Workouts programme and repeat some workouts currently in the programme for extra days. I reccommend focusing on extra Push and Pull days as building an aesthetic upper body is a priority for most men when it comes to physique.${splitOneHourNote}` });
+            }
+            if (length === '30-45') return withDocs({ programme: '30 Minute Workouts For Busy People', popup: 'Use the 30 Minute Workouts programme and repeat some workouts currently in the programme for extra days. I reccommend focusing on extra Push and Pull days as building an aesthetic upper body is a priority for most men when it comes to physique.' });
+            return withDocs({ programme: 'Beginner Upper Lower Supersets Full Body', popup: 'Use Beginner Upper Lower Supersets Full Body 3x A Week as your core programme; repeat workouts in the programme for additional workout days, or do some light jogging or stretching / yoga for recovery on your extra workout days.' });
+          }
+          if (days === '6') {
+            if (unsurePreferenceAndTime) return withDocs({ programme: '30 Minute Workouts For Busy People', popup: 'Use the 30 Minute Workouts programme and repeat some workouts currently in the programme for extra days. You can repeat the Push Pull & Leg Day on this programme at 6 Days. Although as a Beginner, you may wish to commit to 3 days in the gym and do some light jogs, sports, or stretching on your off days. This is the best default when training preference and time are uncertain.' });
+            if (pref === 'splits' && (length === '30-45' || length === '60' || length === 'unsure')) {
+              const splitOneHourNote = pref === 'splits' && length === '60' ? ' To extend this workout to 1 hour, you can add some extra cardio on a cardio machine or do an extra set per exercise.' : '';
+              return withDocs({ programme: '30 Minute Workouts For Busy People', popup: `Use the 30 Minute Workouts programme and repeat some workouts currently in the programme for extra days. You can repeat the Push Pull & Leg Day on this programme at 6 Days. Although as a Beginner, you may wish to commit to 3 days in the gym and do some light jogs, sports, or stretching on your off days.${splitOneHourNote}` });
+            }
+            if (length === '30-45') return withDocs({ programme: '30 Minute Workouts For Busy People', popup: 'Use the 30 Minute Workouts programme and repeat some workouts currently in the programme for extra days. You can repeat the Push Pull & Leg Day on this programme at 6 Days. Although as a Beginner, you may wish to commit to 3 days in the gym and do some light jogs, sports, or stretching on your off days.' });
+            return withDocs({ programme: 'Beginner Upper Lower Supersets Full Body', popup: 'Use Beginner Upper Lower Supersets Full Body 3x A Week as your core programme; repeat workouts in the programme for additional workout days, or do some light jogging or stretching / yoga for recovery on your extra workout days.' });
+          }
+        }
+        // Beginner female
+        if (sex === 'female') {
+          if (days === '2') {
+            if (pref === 'lower_only') return withDocs({ programme: 'Female Beginner Lower Only', popup: "You're training 2 days per week — follow the Female Beginner Lower Only twice per week and skip one programmed session." });
+            const timeNote = length === '60'
+              ? ' To workout for the full hour, add an extra set per exercise or do cardio for longer, and you should easily reach an hour per session on this programme.'
+              : length === '30-45'
+                ? ' To get the workouts done in 30 minutes, lighten the weights and take shorter rest breaks in between sets.'
+                : '';
+            return withDocs({ programme: 'Female Beginner Full Body', popup: `You're training 2 days per week — follow the Female Beginner Full Body twice per week and skip one programmed session.${timeNote}` });
+          }
+          if (days === '3') {
+            if (pref === 'lower_only') {
+              return withDocs({
+                programme: 'Female Beginner Lower Only',
+                popup: 'Follow the Female Beginner Lower Only programme. Use your rest days for active recovery, such as a sports class, a run, some yoga, pilates, or stretching for mobility and recovery.'
+              });
+            }
+            const timeNote = length === '60'
+              ? ' To workout for the full hour, add an extra set per exercise or do cardio for longer, and you should easily reach an hour per session on this programme.'
+              : length === '30-45'
+                ? ' To get the workouts done in 30 minutes, lighten the weights and take shorter rest breaks in between sets.'
+                : '';
+            return withDocs({ programme: 'Female Beginner Full Body — 3x/week', popup: `Follow the Female Beginner Full Body 3x/week.${timeNote}` });
+          }
+          if (days === '4' || days === '5' || days === '6') {
+            if (pref === 'lower_only') {
+              return withDocs({
+                programme: 'Female Beginner Lower Only',
+                popup: 'Follow the Female Beginner Lower Only programme. Use your rest days for active recovery, such as a sports class, a run, some yoga, pilates, or stretching for mobility and recovery.'
+              });
+            }
+            const timeNote = length === '60'
+              ? ' To workout for the full hour, add an extra set per exercise or do cardio for longer, and you should easily reach an hour per session on this programme.'
+              : length === '30-45'
+                ? ' To get the workouts done in 30 minutes, lighten the weights and take shorter rest breaks in between sets.'
+                : '';
+            return withDocs({ programme: 'Female Beginner Full Body — 3x/week', popup: `Keep your 3 programmed Full Body sessions as the main strength training; use additional workout days for low pressure activity such as a sports class, a run, some yoga, pilates, or stretching for mobility and recovery.${timeNote}` });
+          }
+        }
+      }
+
+      if (exp === 'intermediate') {
+        if (sex === 'male') {
+          if (days === '2' && pref === 'splits') {
+            return withDocs({
+              programme: 'Intermediate Upper Lower Supersets',
+              popup: 'Use the Intermediate Upper Lower Supersets programme, but remove one workout each week so that you complete 2 sessions rather than 3. You have been reccomended a Full Body programme for maximum progress because Splits do not function well at only 2 days per week. A Full Body routine is needed to work the whole body in such a short amount of days.'
+            });
+          }
+          if (days === '2') return withDocs({ programme: 'Intermediate Upper Lower Supersets', popup: 'Use the Intermediate Upper Lower Supersets programme, but remove one workout each week so that you complete 2 sessions rather than 3.' });
+          if (days === '3') {
+            if (pref === 'splits' && length === '30-45') {
+              return withDocs({
+                programme: 'Intermediate Male 30 Minute Workouts For Busy People',
+                popup: 'For 3 days a week with a split preference and 30–45 minute sessions, the Intermediate 30 Minute Workouts For Busy People programme is the best fit. Perform 3 days of the programme using the Push, Pull, and Legs workouts.'
+              });
+            }
+            if (pref === 'splits' && length === '60') {
+              return withDocs({
+                programme: 'Intermediate Male 30 Minute Workouts For Busy People',
+                popup: 'For 3 days a week with a split preference and 1 hour sessions, the Intermediate 30 Minute Workouts For Busy People programme is the best fit. Perform 3 days of the programme using the Push, Pull, and Legs workouts.'
+              });
+            }
+            if (pref === 'full_body') return withDocs({ programme: 'Intermediate Upper Lower Supersets', popup: 'Recommended: Intermediate Upper Lower Supersets for balanced growth.' });
+            return withDocs({ programme: 'Intermediate Upper Lower Supersets (recommended) or Intermediate Male 30 Minute Workouts For Busy People (alternative)', popup: 'Recommended: Intermediate Upper Lower Supersets if you like to train Full Body, but Full Body workouts take slightly longer. Alternative: Intermediate 30 Minute Workouts For Busy People is recommended if you truly want to workout in 30 - 45 minutes and are open to trying a split routine.' });
+          }
+          if (days === '4' || days === '5' || days === '6') {
+            if ((pref === 'unsure' && length === '30-45') || (pref === 'unsure' && length === '60')) {
+              if (days === '5') {
+                return withDocs({
+                  programme: 'Intermediate Male 30 Minute Workouts For Busy People 4-Day',
+                  popup: 'With 30–45 minute sessions and an unsure split preference, the Intermediate 30 Minute Workouts For Busy People programme is the best fit for 5+ days. For 5 days a week do an extra day from the programme: a Push Pull Legs Push Pull.'
+                });
+              }
+              if (days === '6') {
+                return withDocs({
+                  programme: 'Intermediate Male 30 Minute Workouts For Busy People 4-Day',
+                  popup: 'With 30–45 minute sessions and an unsure split preference, the Intermediate 30 Minute Workouts For Busy People programme is the best fit for 6+ days. Repeat the Push Pull Legs workouts for 6 days a week, so Push Pull Legs Push Pull Legs then a rest day.'
+                });
+              }
+              return withDocs({
+                programme: 'Intermediate Male 30 Minute Workouts For Busy People 4-Day',
+                popup: 'With 30–45 minute sessions and an unsure split preference, the Intermediate 30 Minute Workouts For Busy People programme is the best fit for 4+ days.'
+              });
+            }
+            if (pref === 'unsure' && length === 'unsure') {
+              if (days === '5') {
+                return withDocs({
+                  programme: 'Intermediate Male 30 Minute Workouts For Busy People 4-Day',
+                  popup: 'With an unsure split preference and an uncertain workout length, the Intermediate 30 Minute Workouts For Busy People programme is the best fit for 5+ days. For 5 days a week do an extra day from the programme: a Push Pull Legs Push Pull.'
+                });
+              }
+              if (days === '6') {
+                return withDocs({
+                  programme: 'Intermediate Male 30 Minute Workouts For Busy People 4-Day',
+                  popup: 'With an unsure split preference and an uncertain workout length, the Intermediate 30 Minute Workouts For Busy People programme is the best fit for 6+ days. Repeat the Push Pull Legs workouts for 6 days a week, so Push Pull Legs Push Pull Legs then a rest day.'
+                });
+              }
+              return withDocs({
+                programme: 'Intermediate Male 30 Minute Workouts For Busy People 4-Day',
+                popup: 'With an unsure split preference and an uncertain workout length, the Intermediate 30 Minute Workouts For Busy People programme is the best fit for 4+ days.'
+              });
+            }
+            if (pref === 'full_body' || pref === 'unsure') {
+              return withDocs({
+                programme: 'Intermediate Upper Lower Supersets',
+                popup: 'Use the Intermediate Upper Lower Supersets programme as your core. If you are training 4+ days, keep the 3-day plan as the main structure and repeat a workout from the programme on your extra days, or do a light jog, a sports class, or some stretching / yoga for recovery.'
+              });
+            }
+            return withDocs({ programme: 'Intermediate Male 30 Minute Workouts For Busy People 4-Day', popup: 'Intermediate 4-Day Busy People programme.' });
+          }
+        }
+        if (sex === 'female') {
+          const shortSessionNote = length === '30-45'
+            ? ' To get the workouts done in 30 minutes, lighten the weights and take shorter rest breaks in between sets.'
+            : '';
+
+          if (pref === 'lower_only') {
+            if (days === '2') {
+              return withDocs({ programme: 'Intermediate Female Lower Only — 3x/week (reduced to 2)', popup: `For 2 days: use the Intermediate Female Lower Only programme but remove one workout to make 2 sessions per week instead of 3.${shortSessionNote}` });
+            }
+            if (days === '4') {
+              return withDocs({ programme: 'Intermediate Female Lower Only — 3x/week', popup: `For 4 days: keep the 3-day Lower Only plan as your main strength structure, then repeat a lower-body session on the extra workout day, or do yoga, stretching, cardio, or a sports exercise class on the additional day.${shortSessionNote}` });
+            }
+            if (days === '5') {
+              return withDocs({ programme: 'Intermediate Female Lower Only — 3x/week', popup: `For 5 days: keep the 3-day Lower Only plan as your main strength structure, then repeat a lower-body session on the extra workout day(s), or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${shortSessionNote}` });
+            }
+            if (days === '6') {
+              return withDocs({ programme: 'Intermediate Female Lower Only — 3x/week', popup: `For 6 days: keep the 3-day Lower Only plan as your main strength structure, then repeat a lower-body session on the extra workout day(s), or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${shortSessionNote}` });
+            }
+            return withDocs({ programme: 'Intermediate Female Lower Only — 3x/week', popup: `Follow the 3x/week Lower Only programme; use extra workout days for less intense work such as a sports class, a run, some yoga, pilates, or stretching for mobility and recovery.${shortSessionNote}` });
+          }
+
+          if (pref === 'splits') {
+            if (days === '2') {
+              return withDocs({ programme: 'Intermediate Female Upper / Lower Split — 3x/week (reduced to 2)', popup: `For 2 days: use the Intermediate Female Split programme but remove one workout to make 2 sessions per week instead of 3.${shortSessionNote}` });
+            }
+            if (days === '4') {
+              return withDocs({ programme: 'Intermediate Female Upper / Lower Split — 3x/week', popup: `For 4 days: keep the 3-day split as your core structure, then repeat a split workout on the extra workout day, or do yoga, stretching, cardio, or a sports exercise class on the additional day.${shortSessionNote}` });
+            }
+            if (days === '5') {
+              return withDocs({ programme: 'Intermediate Female Upper / Lower Split — 3x/week', popup: `For 5 days: keep the 3-day split as your core structure, then repeat a split workout on the extra workout day(s), or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${shortSessionNote}` });
+            }
+            if (days === '6') {
+              return withDocs({ programme: 'Intermediate Female Upper / Lower Split — 3x/week', popup: `For 6 days: keep the 3-day split as your core structure, then repeat a split workout on the extra workout day(s), or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${shortSessionNote}` });
+            }
+            return withDocs({ programme: 'Intermediate Female Upper / Lower Split — 3x/week', popup: `Follow the 3x/week split programme and keep your sessions focused on quality and recovery.${shortSessionNote}` });
+          }
+
+          if (pref === 'unsure') {
+            if (days === '2') {
+              return withDocs({ programme: 'Intermediate Female Full Body — 3x/week (reduced to 2)', popup: `For 2 days: use the Intermediate Female Full Body programme but remove one weekly workout to make 2 sessions per week instead of 3.${shortSessionNote}` });
+            }
+            if (days === '4') {
+              return withDocs({ programme: 'Intermediate Female Full Body — 3x/week', popup: `For 4 days: keep the 3-day Full Body plan as your main strength work, then repeat a workout on the extra workout day, or do yoga, stretching, cardio, or a sports exercise class on the additional day.${shortSessionNote}` });
+            }
+            if (days === '5') {
+              return withDocs({ programme: 'Intermediate Female Full Body — 3x/week', popup: `For 5 days: keep the 3-day Full Body plan as your main strength work, then repeat a workout on the extra workout day(s), or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${shortSessionNote}` });
+            }
+            if (days === '6') {
+              return withDocs({ programme: 'Intermediate Female Full Body — 3x/week', popup: `For 6 days: keep the 3-day Full Body plan as your main strength work, then repeat a workout on the extra workout day(s), or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${shortSessionNote}` });
+            }
+            return withDocs({ programme: 'Intermediate Female Full Body — 3x/week', popup: `Follow the 3x/week Full Body programme.${shortSessionNote}` });
+          }
+
+          if (days === '2') {
+            return withDocs({ programme: 'Intermediate Female Full Body — 3x/week (reduced to 2)', popup: `For 2 days: use the Intermediate Female Full Body programme but remove one weekly workout to make 2 sessions per week instead of 3.${shortSessionNote}` });
+          }
+          if (days === '4') {
+            return withDocs({ programme: 'Intermediate Female Full Body — 3x/week', popup: `For 4 days: keep the 3-day Full Body plan as your main strength work, then repeat a workout on the extra workout day, or do yoga, stretching, cardio, or a sports exercise class on the additional day.${shortSessionNote}` });
+          }
+          if (days === '5') {
+            return withDocs({ programme: 'Intermediate Female Full Body — 3x/week', popup: `For 5 days: keep the 3-day Full Body plan as your main strength work, then repeat a workout on the extra workout day(s), or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${shortSessionNote}` });
+          }
+          if (days === '6') {
+            return withDocs({ programme: 'Intermediate Female Full Body — 3x/week', popup: `For 6 days: keep the 3-day Full Body plan as your main strength work, then repeat a workout on the extra workout day(s), or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${shortSessionNote}` });
+          }
+          return withDocs({ programme: 'Intermediate Female Full Body — 3x/week', popup: `Follow the 3x/week Full Body programme.${shortSessionNote}` });
+        }
+      }
+
+      if (exp === 'advanced') {
+        if (sex === 'male') {
+          if (days === '2' || days === '3') {
+            const upperLowerPopup = "Intermediate Upper / Lower Supersets is the better fit for 2–3 days; complete 2 of the 3 weekly workouts if using 2 days.";
+            const halfHourNote = (pref === 'unsure' || pref === 'splits') && length === '30-45'
+              ? ' To complete these workouts in half an hour, drop off a set or two, lighten the weights and reduce rest times.'
+              : '';
+            const splitNote = pref === 'splits'
+              ? ' Although you have selected Splits as a preference, in 2 to 3 days a week, a full body workout is better suited to your goals, hitting each muscle group a minimum of twice a week.'
+              : '';
+            const unsureTimeNote = length === 'unsure'
+              ? ' Since you are unsure about the time you want to workout, just test the programme and workout for however long works for you. If you need to shorten the workouts to half an hour, reduce the number of sets you do, or lighten your weights to take faster rest periods. The programme will still be effective.'
+              : '';
+            return withDocs({ programme: 'Intermediate Upper / Lower Supersets 3x/week', popup: `${upperLowerPopup}${halfHourNote}${splitNote}${unsureTimeNote}` });
+          }
+          if (days === '4') {
+            const halfHourNote = (pref === 'unsure' || pref === 'splits') && length === '30-45' ? ' To complete these workouts in half an hour, drop off a set or two, lighten the weights and reduce rest times.' : '';
+            const unsureTimeNote = length === 'unsure'
+              ? ' Since you are unsure about the time you want to workout, just test the programme and workout for however long works for you. If you need to shorten the workouts to half an hour, reduce the number of sets you do, or lighten your weights to take faster rest periods. The programme will still be effective.'
+              : '';
+            return withDocs({ programme: 'Male Advanced Athlete 5-Day Programme (or Male Intermediate Upper / Lower Supersets)', popup: `Option 1: Advanced 5-Day minus one leg day for upper-body focus. Option 2: Intermediate Upper / Lower Supersets plus one Intermediate Male 30 Minute Workouts For Busy People Push workout for balanced development.${halfHourNote}${unsureTimeNote}` });
+          }
+          if (days === '5') {
+            const halfHourNote = (pref === 'unsure' || pref === 'splits') && length === '30-45' ? ' To complete these workouts in half an hour, drop off a set or two, lighten the weights and reduce rest times.' : '';
+            const unsureTimeNote = length === 'unsure'
+              ? ' Since you are unsure about the time you want to workout, just test the programme and workout for however long works for you. If you need to shorten the workouts to half an hour, reduce the number of sets you do, or lighten your weights to take faster rest periods. The programme will still be effective.'
+              : '';
+            const fullBodyNote = pref === 'full_body'
+              ? ' Even though you have selected full body workouts as your preference, at 5+ days a week a Split approach can allow you to workout more days per week with balanced and intentional recovery of muscle groups, consider our Advanced Athlete programme if you truly want to lift weights 5x a week and balance this with sports.'
+              : '';
+            return withDocs({ programme: 'Male Advanced Athlete 5-Day Programme', popup: `Follow the Advanced 5-Day Programme.${halfHourNote}${unsureTimeNote}${fullBodyNote}` });
+          }
+          if (days === '6') {
+            const halfHourNote = (pref === 'unsure' || pref === 'splits') && length === '30-45' ? ' To complete these workouts in half an hour, drop off a set or two, lighten the weights and reduce rest times.' : '';
+            const unsureTimeNote = length === 'unsure'
+              ? ' Since you are unsure about the time you want to workout, just test the programme and workout for however long works for you. If you need to shorten the workouts to half an hour, reduce the number of sets you do, or lighten your weights to take faster rest periods. The programme will still be effective.'
+              : '';
+            const fullBodyNote = pref === 'full_body'
+              ? ' Even though you have selected full body workouts as your preference, at 6+ days a week a Split approach can allow you to workout more days per week with balanced and intentional recovery of muscle groups, consider our Advanced Athlete programme if you truly want to lift weights 6x a week and balance this with sports.'
+              : '';
+            return withDocs({ programme: 'Male Advanced Athlete 5-Day Programme', popup: `Use the Advanced 5-Day Programme as the primary structure (Push Pull Legs, Push Pull); consider repeating a leg day (PPLPPL) if desired for 6 days a week.${halfHourNote}${unsureTimeNote}${fullBodyNote}` });
+          }
+        }
+        if (sex === 'female') {
+          if (pref === 'lower_only') {
+            const shortSessionNote = length === '30-45'
+              ? ' To get the workouts done in 30 minutes, lighten the weights and take shorter rest breaks in between sets.'
+              : '';
+            const unsureTimeNote = length === 'unsure'
+              ? ' Since you are unsure about the time you want to workout, just test the programme and workout for however long works for you. If you need to shorten the workouts to half an hour, reduce the number of sets you do, or lighten your weights to take faster rest periods. The programme will still be effective.'
+              : '';
+
+            if (days === '2') {
+              return withDocs({ programme: 'Female Intermediate Lower Only — 3x/week (reduced to 2)', popup: `For 2 days: use the Female Intermediate Lower Only programme but remove one workout to make 2 sessions per week instead of 3.${shortSessionNote}${unsureTimeNote}` });
+            }
+            if (days === '3') {
+              return withDocs({ programme: 'Female Intermediate Lower Only', popup: `Follow the Female Intermediate Lower Only programme.${shortSessionNote}${unsureTimeNote}` });
+            }
+            if (days === '4') {
+              return withDocs({ programme: 'Female Intermediate Lower Only — 3x/week', popup: `For 4 days: keep the 3-day Lower Only plan as your main strength structure, then repeat a lower-body session on the extra workout day, or do yoga, stretching, cardio, or a sports exercise class on the additional day.${shortSessionNote}${unsureTimeNote}` });
+            }
+            if (days === '5') {
+              return withDocs({ programme: 'Female Intermediate Lower Only — 3x/week', popup: `For 5 days: keep the 3-day Lower Only plan as your main strength structure, then repeat a lower-body session on the extra workout day(s), or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${shortSessionNote}${unsureTimeNote}` });
+            }
+            if (days === '6') {
+              return withDocs({ programme: 'Female Intermediate Lower Only — 3x/week', popup: `For 6 days: keep the 3-day Lower Only plan as your main strength structure, then repeat a lower-body session on the extra workout day(s), or do yoga, stretching, cardio, or a sports exercise class on the additional day(s).${shortSessionNote}${unsureTimeNote}` });
+            }
+          }
+
+          if (pref === 'splits') {
+            const shortSessionNote = length === '30-45'
+              ? ' To get the workouts done in 30 minutes, lighten the weights and take shorter rest breaks in between sets.'
+              : '';
+            const unsureTimeNote = length === 'unsure'
+              ? ' Since you are unsure about the time you want to workout, just test the programme and workout for however long works for you. If you need to shorten the workouts to half an hour, reduce the number of sets you do, or lighten your weights to take faster rest periods. The programme will still be effective.'
+              : '';
+
+            if (days === '2') {
+              return withDocs({
+                programme: 'Intermediate Female Full Body — 3x/week (reduced to 2)',
+                popup: `Full Body programme reccommended. At 2 days a week splits are not ideal as it is ideal to work each muscle group twice a week for optimal growth, and full body is the way this is achieved at 2 sessions a week.${shortSessionNote}${unsureTimeNote}`
+              });
+            }
+            if (days === '3') {
+              return withDocs({
+                programme: 'Female Advanced Athlete Programme',
+                popup: `Follow the Female Advanced Athlete programme. At 3 days a week, do two lower body sessions and 1 upper from this programme.${shortSessionNote}${unsureTimeNote}`
+              });
+            }
+          }
+
+          if (days === '2') {
+            const timeNote = length === '30-45'
+              ? ' With 30 - 45 minutes, you cannot sit on your phone for long in between sets, you may have to reduce the amount of sets per exercise by 1 set, and you may have to lighten weights and shorten rest times. If you really have days where you only have 30 minutes, you can also go in and do a basic default day: do 3 sets of Barbell Squats, 3 Sets of Lateral Pulldowns, and running on the Treadmill for the time remaining.'
+              : '';
+            const shortSessionNote = length === '30-45'
+              ? ' To get the workouts done in 30 minutes, lighten the weights and take shorter rest breaks in between sets.'
+              : '';
+            const unsureTimeNote = length === 'unsure'
+              ? ' Since you are unsure about the time you want to workout, just test the programme and workout for however long works for you. If you need to shorten the workouts to half an hour, reduce the number of sets you do, or lighten your weights to take faster rest periods. The programme will still be effective.'
+              : '';
+            return withDocs({ programme: 'Intermediate Female Full Body — 3x/week (reduced to 2)', popup: `Use the Intermediate Female Full Body programme but remove one weekly workout to make 2 sessions per week.${timeNote}${shortSessionNote}${unsureTimeNote}` });
+          }
+          if (days === '3') {
+            const shortSessionNote = length === '30-45'
+              ? ' To get the workouts done in 30 minutes, lighten the weights and take shorter rest breaks in between sets.'
+              : '';
+            const unsureTimeNote = length === 'unsure'
+              ? ' Since you are unsure about the time you want to workout, just test the programme and workout for however long works for you. If you need to shorten the workouts to half an hour, reduce the number of sets you do, or lighten your weights to take faster rest periods. The programme will still be effective.'
+              : '';
+            return withDocs({ programme: 'Intermediate Female Full Body Programme', popup: `Follow the Intermediate Full Body Plan 3x A Week.${shortSessionNote}${unsureTimeNote}` });
+          }
+          if (days === '4') {
+            const shortSessionNote = length === '30-45'
+              ? ' To get the workouts done in 30 minutes, lighten the weights and take shorter rest breaks in between sets.'
+              : '';
+            const unsureTimeNote = length === 'unsure'
+              ? ' Since you are unsure about the time you want to workout, just test the programme and workout for however long works for you. If you need to shorten the workouts to half an hour, reduce the number of sets you do, or lighten your weights to take faster rest periods. The programme will still be effective.'
+              : '';
+            return withDocs({ programme: 'Advanced Female 5-Day Programme (remove one day)', popup: `Use the Advanced 5-Day structure and remove one training day to fit 4 days.${shortSessionNote}${unsureTimeNote}` });
+          }
+          if (days === '5' || days === '6') {
+            const shortSessionNote = length === '30-45'
+              ? ' To get the workouts done in 30 minutes, lighten the weights and take shorter rest breaks in between sets.'
+              : '';
+            const unsureTimeNote = length === 'unsure'
+              ? ' Since you are unsure about the time you want to workout, just test the programme and workout for however long works for you. If you need to shorten the workouts to half an hour, reduce the number of sets you do, or lighten your weights to take faster rest periods. The programme will still be effective.'
+              : '';
+            const fullBodyNote = pref === 'full_body'
+              ? ' even though you have selected full body workouts as your preference, at 5+ days a week a Split approach can allow you to workout more days per week with balanced and intentional recovery of muscle groups, consider our Advanced Athlete programme if you truly want to lift weights 5x a week and balance this with sports.'
+              : '';
+            const sixDayActiveRestNote = days === '6'
+              ? ' If you wish to workout 6 days a week you can add an active rest day where you do a sport, an exercise class, some mobility work or a run.'
+              : '';
+            return withDocs({ programme: 'Advanced Female 5-Day Programme', popup: `Follow the Advanced Female 5-Day Programme.${shortSessionNote}${unsureTimeNote}${fullBodyNote}${sixDayActiveRestNote}` });
+          }
+        }
+      }
+      if (days === '3') {
+        if (pref === 'splits') {
+          return { programme: sex === 'female' ? 'Female Upper / Lower (3x variant)' : 'Upper / Lower Supersets', popup: 'You prefer splits — for three sessions we recommend an Upper / Lower Supersets structure to balance frequency and recovery.', additionalDocs: docs };
+        }
+        return { programme: sex === 'female' ? 'Female Full Body — 3x/week' : 'Intermediate Full Body 3x/week', popup: 'Recommended: Full Body 3x/week for balanced progress at three sessions per week. If you have fewer days, remove a session; if you have more, keep these as your core and use extra days for low-pressure activity or repeat an extra session of the programme.', additionalDocs: docs };
+      }
+      if (days === '5') {
+        return { programme: sex === 'female' ? 'Advanced Female 5-Day Programme' : 'Advanced 5-Day Programme', popup: 'Recommended: Advanced 5-Day Programme for higher frequency and volume. If you selected fewer days, adapt by removing or combining sessions; if you have extra days, use low-pressure cardio or accessory work.', additionalDocs: docs };
+      }
+      if (days === '2') {
+        if (sex === 'female') {
+          return { programme: 'Intermediate Female Full Body — 3x/week (reduced to 2) or Intermediate Lower Only (reduced to 2)', popup: "For 2 days: Use the Intermediate Full Body 3x/week programme but drop one weekly session (complete 2 of the 3), or follow the Intermediate Lower-Only option and drop one of its sessions. This keeps frequency sensible while preserving progress.", additionalDocs: docs };
+        }
+        // male / non-female
+        return { programme: 'Intermediate Upper Lower Supersets Full Body 3x/week (use 2 of 3)', popup: "For 2 days: follow the 3x/week Full Body / Upper-Lower intermediate structure but perform 2 of the 3 weekly workouts (take one programmed day off). This keeps the plan coherent while matching your availability.", additionalDocs: docs };
+      }
+      if (days === '4') {
+        if (sex === 'female') {
+          if (pref === 'splits') {
+            return { programme: 'Modified Advanced Female 5-Day (upper/upper/lower/lower)', popup: "For 4 days: use the 5-day Advanced layout but modify to upper / upper / lower / lower — drop one lower day from the 5-day layout. Alternatively, do upper + three lowers if you want to prioritise lower body.", additionalDocs: docs };
+          }
+          return { programme: 'Modified Advanced Female 5-Day (upper/upper/lower/lower)', popup: "For 4 days: use the 5-day Advanced layout but modify to upper / upper / lower / lower — drop one lower day from the 5-day layout. Alternatively, do upper + three lowers if you want to prioritise lower body.", additionalDocs: docs };
+        }
+        // male / non-female
+        if (pref === 'splits') {
+          return { programme: 'Intermediate Advanced Athlete (4-day) + Busy Push', popup: "For 4 days: follow an intermediate/advanced 4-day athlete layout and use a 30‑minute 'Busy People' Push workout as the extra session to provide focused volume without large recovery cost.", additionalDocs: docs };
+        }
+        return { programme: 'Intermediate Advanced Athlete (4-day) + Busy Push', popup: "For 4 days: follow an intermediate/advanced 4-day athlete layout and use a 30‑minute 'Busy People' Push workout as the extra session to provide focused volume without large recovery cost.", additionalDocs: docs };
+      }
+      // 6+
+      if (sex === 'female') {
+        return { programme: 'Advanced Female 5-Day Programme + extra conditioning', popup: 'For 6+ days: run the Advanced 5-Day Programme as your core, and use the extra day(s) for cardio, sport, exercise classes, mobility or yoga to support recovery and conditioning.', additionalDocs: docs };
+      }
+      return { programme: 'Advanced 5-Day Programme (PPLPPL)', popup: 'For 6+ days: run the Advanced 5-Day programme as a full PPL PPL (repeat a leg day on your 6th day so you end up with two leg-focused sessions in the week). Use the 5-day plan as the base and repeat the leg day for additional volume.', additionalDocs: docs };
+    }
+
+    function buildAdditionalDocsList(injuries) {
+      const docs = [];
+      injuries.forEach(i => {
+        if (i === 'None') return;
+        if (INJURY_DOC_MAP[i]) docs.push(INJURY_DOC_MAP[i]);
+      });
+      return docs;
+    }
+
+    // Injury checkbox behaviour: selecting 'None' clears others and vice-versa
+    (function wireInjuryCheckboxes(){
+      const box = document.getElementById('injuryWrap');
+      if (!box) return;
+      const inputs = box.querySelectorAll('input[type=checkbox][name=injury]');
+      inputs.forEach(i => i.addEventListener('change', () => {
+        const none = box.querySelector('input#injury-none');
+        if (!none) return;
+        if (i === none && none.checked) {
+          inputs.forEach(x => { if (x !== none) x.checked = false; });
+        } else if (i !== none && i.checked) {
+          none.checked = false;
+        }
+      }));
+    })();
+
+    // Modal display
+    function showProgrammeModal(result, vals, docs) {
+      const modal = document.createElement('div');
+      modal.style.position = 'fixed'; modal.style.left = 0; modal.style.top = 0; modal.style.right = 0; modal.style.bottom = 0; modal.style.zIndex = 60; modal.style.background = 'rgba(0,0,0,0.6)'; modal.style.display = 'flex'; modal.style.alignItems = 'center'; modal.style.justifyContent = 'center'; modal.style.padding = '20px'; modal.style.overflowY = 'auto';
+      const box = document.createElement('div');
+      box.style.maxWidth = '760px'; box.style.width = 'min(760px, calc(100vw - 32px))'; box.style.maxHeight = 'calc(100vh - 40px)'; box.style.overflowY = 'auto'; box.style.background = 'var(--panel)'; box.style.color = 'var(--text)'; box.style.border = '1px solid var(--border)'; box.style.borderRadius = '10px'; box.style.padding = '22px';
+      box.innerHTML = `<h2 style="color:var(--main-heading);margin-top:0">YOUR AG4 PROGRAMME</h2>
+        <p>Based on your answers, we've selected the programme that best fits your current experience, goals, availability and training preferences.</p>
+        <h3 style="color:var(--main-heading)">RECOMMENDED PROGRAMME</h3>
+        <strong style="display:block;margin-bottom:12px">${result.programme}</strong>
+        <h3 style="color:var(--main-heading)">WHAT TO DO</h3>
+        <p>${result.popup}</p>`;
+      if (docs && docs.length) {
+        const docList = docs.map(d => `<li>${d}</li>`).join('');
+        box.innerHTML += `<h3 style="color:var(--main-heading)">ADDITIONAL TRAINING GUIDES</h3><ul>${docList}</ul><p>These guides contain relevant training modifications, warm-ups and mobility/stretching recommendations to use alongside your programme.</p>`;
+      }
+      const btn = document.createElement('button'); btn.textContent = 'Close'; btn.className = 'calc-button'; btn.style.marginTop = '12px';
+      btn.addEventListener('click', () => { modal.remove(); });
+      box.appendChild(btn);
+      modal.appendChild(box);
+      document.body.appendChild(modal);
+    }
+
+    async function submitToSheet(payload) {
+      try {
+        if (!PROGRAM_GOOGLE_APPS_SCRIPT_URL) { console.log('Payload', payload); return; }
+        const response = await fetch(PROGRAM_GOOGLE_APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+          console.warn('Program submission returned a non-OK response:', response.status);
+        }
+      } catch (err) {
+        console.warn('Could not send to Google Apps Script', err);
+      }
+    }
+
+    document.getElementById('getProgramButton').addEventListener('click', async () => {
+      const vals = collectFormValues();
+      if (!vals.primary) { alert('Please choose an option first.'); return; }
+
+      let result;
+      if (vals.primary === 'athlete') {
+        if (!vals.daysPerWeek || !vals.sex) { alert('Please select your sex and how many days you want to train.'); return; }
+        result = pickProgramSimplified({ primary: 'athlete', daysPerWeek: vals.daysPerWeek, sex: vals.sex || vals.athleteSex, injuries: vals.injuries || [] });
+      } else {
+        if (!vals.sex) { alert('Please select your sex.'); return; }
+        if (!vals.experience) { alert('Please select your training experience.'); return; }
+        if (!vals.preference) { alert('Please select your training preference.'); return; }
+        if (!vals.daysPerWeek) { alert('Please select days per week.'); return; }
+        result = pickProgramSimplified({ primary: 'general', sex: vals.sex, daysPerWeek: vals.daysPerWeek, preference: vals.preference, experience: vals.experience, workoutLength: vals.workoutLength, injuries: vals.injuries || [] });
+      }
+
+      const docs = buildAdditionalDocsList(vals.injuries || []);
+
+      const payload = {
+        formType: 'program_selector',
+        date: new Date().toISOString(),
+        primary: vals.primary,
+        sex: vals.sex || vals.athleteSex || '',
+        experience: vals.experience || '',
+        daysPerWeek: vals.daysPerWeek || '',
+        athleteChoice: vals.daysPerWeek || '',
+        preference: vals.preference || '',
+        workoutLength: vals.workoutLength || '',
+        injuries: vals.injuries || [],
+        recommendedProgramme: result.programme,
+        popupInstructions: result.popup,
+        additionalDocuments: docs
+      };
+
+      showProgrammeModal(result, vals, docs);
+      await submitToSheet(payload);
+    });
+  </script>
+</body>
+</html>

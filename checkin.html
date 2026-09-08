@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AG Check-In</title>
+  <style>
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-Light.ttf') format('truetype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-Medium.ttf') format('truetype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-SemiBold.ttf') format('truetype');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url('assets/fonts/Rajdhani-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --page-bg: #000000;
+      --page-bg-end: #000000;
+      --page-bg-accent: rgba(255, 212, 0, 0.10);
+      --card-bg: linear-gradient(180deg, rgba(17, 17, 17, 0.96), rgba(8, 8, 8, 0.98));
+      --hero-bg: linear-gradient(135deg, rgba(255, 212, 0, 0.08), transparent 45%);
+      --logo-bg: rgba(0, 0, 0, 0.35);
+      --panel-bg: rgba(255, 255, 255, 0.02);
+      --input-bg: #111111;
+      --secondary-bg: #1a1a1a;
+      --secondary-text: #ffffff;
+      --border: #262626;
+      --text: #ffffff;
+      --muted: rgba(255, 255, 255, 0.72);
+      --accent: #ffd400;
+      --danger: #ff6b6b;
+      --success: #166534;
+      --toggle-bg: rgba(255, 255, 255, 0.08);
+      --toggle-border: rgba(255, 255, 255, 0.14);
+      --toggle-text: #ffffff;
+      --toggle-shadow: rgba(0, 0, 0, 0.22);
+    }
+
+    body[data-theme='light'] {
+      --page-bg: #f7f7f4;
+      --page-bg-end: #ffffff;
+      --page-bg-accent: rgba(255, 212, 0, 0.18);
+      --card-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 245, 240, 0.98));
+      --hero-bg: linear-gradient(135deg, rgba(255, 212, 0, 0.14), transparent 45%);
+      --logo-bg: rgba(255, 255, 255, 0.72);
+      --panel-bg: rgba(0, 0, 0, 0.03);
+      --input-bg: #ffffff;
+      --secondary-bg: #eceae4;
+      --secondary-text: #111111;
+      --border: #d8d5cb;
+      --text: #111111;
+      --muted: rgba(17, 17, 17, 0.70);
+      --success: #14532d;
+      --toggle-bg: #fdfcf8;
+      --toggle-border: rgba(0, 0, 0, 0.12);
+      --toggle-text: #111111;
+      --toggle-shadow: rgba(0, 0, 0, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Rajdhani', Arial, sans-serif;
+      background:
+        radial-gradient(circle at top, var(--page-bg-accent), transparent 35%),
+        linear-gradient(180deg, var(--page-bg) 0%, var(--page-bg-end) 100%);
+      color: var(--text);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 20;
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      border: 1px solid var(--toggle-border);
+      background: var(--toggle-bg);
+      color: var(--toggle-text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 12px 28px var(--toggle-shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .theme-toggle svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    .theme-toggle .sun-icon,
+    .theme-toggle .moon-icon {
+      display: none;
+    }
+
+    body[data-theme='dark'] .theme-toggle .sun-icon {
+      display: block;
+    }
+
+    body[data-theme='light'] .theme-toggle .moon-icon {
+      display: block;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .card {
+      width: min(920px, 100%);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 24px;
+      align-items: center;
+      padding: 28px;
+      border-bottom: 1px solid var(--border);
+      background: var(--hero-bg);
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--logo-bg);
+      border: 1px solid rgba(255, 212, 0, 0.18);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .logo-wrap img {
+      width: 100%;
+      max-width: 170px;
+      display: block;
+    }
+
+    .hero-copy h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 0.95;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .hero-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.4;
+    }
+
+    .content {
+      padding: 28px;
+    }
+
+    .panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--input-bg);
+      color: var(--text);
+      padding: 14px 16px;
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: rgba(255, 212, 0, 0.9);
+      box-shadow: 0 0 0 3px rgba(255, 212, 0, 0.14);
+    }
+
+    .question-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .choice-group {
+      display: grid;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .choice-group.percent-group {
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .choice-group.scale-group {
+      grid-template-columns: repeat(auto-fit, minmax(62px, 1fr));
+    }
+
+    .choice-pill {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--input-bg);
+      color: var(--text);
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      text-align: center;
+    }
+
+    .choice-pill:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255, 212, 0, 0.9);
+    }
+
+    .choice-pill input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .choice-pill span {
+      position: relative;
+      z-index: 1;
+      font-weight: 600;
+      line-height: 1.15;
+    }
+
+    .choice-pill.is-selected {
+      border-color: var(--accent);
+      background: rgba(255, 212, 0, 0.12);
+      box-shadow: 0 0 0 3px rgba(255, 212, 0, 0.10);
+    }
+
+    body[data-theme='light'] .choice-pill.is-selected {
+      background: rgba(255, 212, 0, 0.18);
+    }
+
+    .field textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .field input[type='number'] {
+      appearance: textfield;
+    }
+
+    .field input[type='number']::-webkit-outer-spin-button,
+    .field input[type='number']::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .field-note {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.35;
+    }
+
+    .composite-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .composite-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .composite-field .field {
+      margin-bottom: 0;
+    }
+
+    .scale-hint {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.25;
+    }
+
+    .code-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .button {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .button-accent {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 10px 30px rgba(255, 212, 0, 0.18);
+    }
+
+    .button-secondary {
+      background: var(--secondary-bg);
+      color: var(--secondary-text);
+      border: 1px solid var(--border);
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 0.98rem;
+      min-height: 1.2em;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .status.success {
+      color: var(--success);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 720px) {
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .code-row,
+      .composite-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light mode" title="Toggle light mode">
+    <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5" fill="currentColor"></circle>
+      <line x1="12" y1="2.5" x2="12" y2="5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line>
+      <line x1="12" y1="18.8" x2="12" y2="21.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line>
+      <line x1="2.5" y1="12" x2="5.2" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line>
+      <line x1="18.8" y1="12" x2="21.5" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line>
+      <line x1="5.2" y1="5.2" x2="7.1" y2="7.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line>
+      <line x1="16.9" y1="16.9" x2="18.8" y2="18.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line>
+      <line x1="5.2" y1="18.8" x2="7.1" y2="16.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line>
+      <line x1="16.9" y1="7.1" x2="18.8" y2="5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line>
+    </svg>
+    <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M21 14.2A9 9 0 0 1 9.8 3a1 1 0 0 0-1.2 1.2A8 8 0 1 0 19.8 15.4a1 1 0 0 0 1.2-1.2Z"></path>
+    </svg>
+  </button>
+
+  <div class="page">
+    <div class="card">
+      <section class="hero">
+        <div class="logo-wrap">
+          <img src="assets/images/ag-logo.png" alt="AG Logo">
+        </div>
+        <div class="hero-copy">
+          <h1 id="pageTitle">Check-In</h1>
+          <p id="pageDescription">Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.</p>
+        </div>
+      </section>
+
+      <div class="content">
+        <section class="panel" id="clientCodePanel">
+          <h2>Client Code</h2>
+          <div class="field code-row">
+            <div>
+              <label for="clientCode">Client Code</label>
+              <input id="clientCode" name="clientCode" type="text" placeholder="Example: JOHN45" autocomplete="off" spellcheck="false">
+            </div>
+            <button class="button button-accent" id="checkCodeButton" type="button">Check Code</button>
+          </div>
+          <div class="status" id="codeStatus"></div>
+        </section>
+
+        <form class="panel hidden" id="checkInForm">
+          <h2>Weekly Check-In</h2>
+          <div id="dynamicFields"></div>
+          <div class="actions">
+            <button class="button button-accent" type="submit" id="submitButton">Submit Check-In</button>
+          </div>
+          <div class="status" id="formStatus"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz8b7EhcgalUrbUdZ2soJqUn5ruFl9RaFVhNtVJLCFxgQsOXBF-O2-Je3miyZAGIFJ4/exec';
+    const themeToggle = document.getElementById('themeToggle');
+    const themePreferenceKey = 'ag-check-in-theme';
+    const pageTitle = document.getElementById('pageTitle');
+    const pageDescription = document.getElementById('pageDescription');
+    const clientCodeInput = document.getElementById('clientCode');
+    const checkCodeButton = document.getElementById('checkCodeButton');
+    const codeStatus = document.getElementById('codeStatus');
+    const checkInForm = document.getElementById('checkInForm');
+    const dynamicFields = document.getElementById('dynamicFields');
+    const formStatus = document.getElementById('formStatus');
+    const submitButton = document.getElementById('submitButton');
+    const clientCodePanel = document.getElementById('clientCodePanel');
+
+    const scaleOptions = Array.from({ length: 10 }, (_, index) => String(index + 1));
+    const percentOptions = ['Under 50%', '50 - 60%', '60 - 70%', '70 - 80%', '80 - 90%', '100%'];
+    const accuracyOptions = ['Under 50%', '50 - 60%', '70-80%', '90%', '100%'];
+    const monthDisplayNames = {
+      january: 'January',
+      february: 'February',
+      march: 'March',
+      april: 'April',
+      may: 'May',
+      june: 'June',
+      july: 'July',
+      august: 'August',
+      september: 'September',
+      october: 'October',
+      november: 'November',
+      december: 'December'
+    };
+
+    const questionBuilder = {
+      percent(label, id) {
+        return {
+          id: id || slugify(label),
+          label,
+          type: 'choiceGroup',
+          variant: 'percent',
+          options: percentOptions
+        };
+      },
+      scale(label, id, options = {}) {
+        return {
+          id: id || slugify(label),
+          label,
+          type: 'choiceGroup',
+          variant: 'scale',
+          options: options.options || scaleOptions,
+          helperLeft: options.helperLeft || '',
+          helperRight: options.helperRight || ''
+        };
+      },
+      text(label, id) {
+        return {
+          id: id || slugify(label),
+          label,
+          type: 'textarea'
+        };
+      },
+      shortText(label, id) {
+        return {
+          id: id || slugify(label),
+          label,
+          type: 'text'
+        };
+      },
+      select(label, options, id) {
+        return {
+          id: id || slugify(label),
+          label,
+          type: 'select',
+          options
+        };
+      },
+      composite(label, subfields, id) {
+        return {
+          id: id || slugify(label),
+          label,
+          type: 'composite',
+          subfields
+        };
+      },
+      sleepComposite(label = 'Rate your sleep quality and quantity (hours slept, + quality 1 - 10)') {
+        return this.composite(label, [
+          {
+            id: 'sleep_hours',
+            label: 'Hours slept',
+            type: 'number',
+            inputType: 'number',
+            min: 0,
+            max: 24,
+            step: 0.5,
+            placeholder: 'Hours slept'
+          },
+          this.scale('Sleep quality', 'sleep_quality', {
+            helperLeft: '1 - Terrible - barely got any sleep',
+            helperRight: '10 - Slept like a baby'
+          })
+        ], 'sleep_quality_quantity');
+      },
+      mealAndHungerComposite(label = 'Are you enjoying your current meal plans and how is your hunger out of 10?') {
+        return this.composite(label, [
+          {
+            id: 'meal_plan_enjoyment',
+            label: 'Enjoying Meal Plans?',
+            type: 'select',
+            options: ['Yes', 'No']
+          },
+          this.scale('Hunger level', 'hunger_level', {
+            helperLeft: '1',
+            helperRight: '10'
+          })
+        ], 'meal_plan_and_hunger');
+      },
+      consistencyAndHungerComposite(label = 'Rate your consistency with meal plans and how is your hunger out of 10?') {
+        return this.composite(label, [
+          {
+            id: 'meal_plan_consistency',
+            label: 'Consistency with meal plans (percentage)',
+            type: 'text',
+            inputType: 'text',
+            placeholder: '0 - 100%'
+          },
+          this.scale('Hunger level', 'hunger_level', {
+            helperLeft: '1',
+            helperRight: '10'
+          })
+        ], 'meal_plan_consistency_and_hunger');
+      },
+      scaleWithReason(label, id, options = {}) {
+        return this.composite(label, [
+          questionBuilder.scale('Rating', `${id || slugify(label)}_rating`, {
+            helperLeft: '1',
+            helperRight: '10'
+          }),
+          {
+            id: `${id || slugify(label)}_reason`,
+            label: 'Why?',
+            type: 'textarea'
+          }
+        ], id || slugify(label));
+      }
+    };
+
+    const week1Base = ({ leadingQuestions = [], trailingQuestions = [], finalQuestion = 'Any questions or concerns for me?', injuriesLabel = 'Any injuries, illnesses, or unusual stress?' } = {}) => ([
+      ...leadingQuestions,
+      questionBuilder.percent('How closely did you follow your training plan this week? Percentage)'),
+      questionBuilder.percent('How closely did you follow your nutrition targets? (Percentage)'),
+      questionBuilder.scale('Rate your energy levels throughout the week 1 - 10'),
+      questionBuilder.sleepComposite(),
+      questionBuilder.scale('Rate your hunger levels 1 - 10 scale'),
+      questionBuilder.text(injuriesLabel),
+      ...trailingQuestions,
+      questionBuilder.text(finalQuestion)
+    ]);
+
+    const week2Base = ({ leadingQuestions = [], trailingQuestions = [], finalQuestion = 'Please share any questions, concerns or issues you wish to work on this week to achieve your best self.' } = {}) => ([
+      ...leadingQuestions,
+      questionBuilder.scale('How much are you enjoying your fitness training at the moment? (1-10)', 'training_enjoyment', {
+        helperLeft: '1 - Bad - found them hard',
+        helperRight: '10 - Amazing - Tough but liking the sessions'
+      }),
+      questionBuilder.percent('Did you complete all your training sessions? (Percentage)'),
+      questionBuilder.scale('Rate your energy levels throughout the week 1 - 10'),
+      questionBuilder.sleepComposite(),
+      questionBuilder.mealAndHungerComposite(),
+      questionBuilder.text('Any new aches and pains?'),
+      ...trailingQuestions,
+      questionBuilder.text(finalQuestion)
+    ]);
+
+    const week3Base = ({ leadingQuestions = [], trailingQuestions = [], finalQuestion = 'Do you have concerns or anything you wish to work on this week to achieve your best self?' } = {}) => ([
+      ...leadingQuestions,
+      questionBuilder.percent('How closely did you follow your training plan this week? (Percentage)'),
+      questionBuilder.percent('How closely did you follow your nutrition targets? (Percentage)'),
+      questionBuilder.scale('Rate your energy levels throughout the week (1 - 10 scale)'),
+      questionBuilder.sleepComposite(),
+      questionBuilder.consistencyAndHungerComposite(),
+      ...trailingQuestions,
+      questionBuilder.text(finalQuestion)
+    ]);
+
+    const week4Base = ({ leadingQuestions = [], beforeFinalQuestions = [], finalQuestion = 'Any extra feedback for me?' } = {}) => ([
+      ...leadingQuestions,
+      questionBuilder.scale('Training sessions ratings out of 10?', 'training_sessions_rating', {
+        helperLeft: '1 - Bad - found them hard',
+        helperRight: '10 - Amazing - Tough but liking the sessions'
+      }),
+      questionBuilder.select('Percentage of accuracy to the plan', accuracyOptions),
+      questionBuilder.text('Did you encounter any difficulties or discomfort with specific exercises or muscle groups?'),
+      questionBuilder.text('Have you noticed any improvements in your form or technique compared to previous weeks?'),
+      questionBuilder.scale('How has your sleep been through this week?', 'sleep_week4', {
+        helperLeft: 'Terrible - barely got any sleep',
+        helperRight: '10 - Slept like a baby'
+      }),
+      questionBuilder.scale('How would you rate the overall intensity of your workouts on a scale of 1 to 10?', 'workout_intensity', {
+        helperLeft: '1 - Could definitely have pushed harder',
+        helperRight: "10 - I'm pushing myself and making every rep count"
+      }),
+      ...beforeFinalQuestions,
+      questionBuilder.text(finalQuestion)
+    ]);
+
+    const checkinContent = {
+      january: {
+        1: {
+          title: 'January Week 1',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week1Base({
+            trailingQuestions: [
+              questionBuilder.text('What was your biggest win this week?'),
+              questionBuilder.text('What was your biggest challenge?')
+            ]
+          })
+        },
+        2: {
+          title: 'January Week 2',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week2Base()
+        },
+        3: {
+          title: 'January Week 3',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week3Base({
+            leadingQuestions: [questionBuilder.text('Describe who you want to be in 1 years time on this program.')],
+            trailingQuestions: []
+          })
+        },
+        4: {
+          title: 'January Week 4',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week4Base()
+        }
+      },
+      february: {
+        1: {
+          title: 'February Week 1',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week1Base({
+            leadingQuestions: [questionBuilder.text('What did this week teach you?')],
+            trailingQuestions: [questionBuilder.text('What’s one thing you want to work on this week?')],
+            leadingQuestions: [questionBuilder.scale('How were your training sessions this week 1 - 10?', 'feb_week3_training_sessions', {
+              helperLeft: '0 - not enjoyable',
+              helperRight: '10 - enjoyable, working hard'
+            })]
+          })
+        },
+        2: {
+          title: 'February Week 2',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week2Base({
+            leadingQuestions: [questionBuilder.text('What’s 3 things you are proud of this week?')]
+          })
+        },
+        3: {
+          title: 'February Week 3',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week3Base({
+            finalQuestion: 'Do you have any questions, concerns or issues you wish to work on this week to achieve your best self.',
+            trailingQuestions: [questionBuilder.text('What felt hard, inconvenient, and frustrating this week?')],
+            leadingQuestions: [questionBuilder.scale('How were your training sessions this week 1 - 10?', 'feb_week3_training_sessions', {
+              helperLeft: '0 - not enjoyable',
+              helperRight: '10 - enjoyable, working hard'
+            })]
+          })
+        },
+        4: {
+          title: 'February Week 4',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week4Base({
+            leadingQuestions: [questionBuilder.text('Highlight what is it about being fit that matters to you most?')]
+          })
+        }
+      },
+      march: {
+        1: {
+          title: 'March Week 1',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week1Base({
+            trailingQuestions: [questionBuilder.scaleWithReason('How would you rate your week from 1 to 10 and why?', 'march_week1_rating')]
+          })
+        },
+        2: {
+          title: 'March Week 2',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week2Base({
+            trailingQuestions: [questionBuilder.text('What’s one thing you want to work on this week?')]
+          })
+        },
+        3: {
+          title: 'March Week 3',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week3Base({
+            trailingQuestions: [questionBuilder.text('How well are you sticking to your core values that we identified when you first started training at AG training?')]
+          })
+        },
+        4: {
+          title: 'March Week 4',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week4Base({
+            beforeFinalQuestions: [
+              questionBuilder.text('Do you feel on track to achieve your greatest goals and become the person you wish to become?'),
+              questionBuilder.text('What could speed up this process further?')
+            ]
+          })
+        }
+      },
+      april: {
+        1: {
+          title: 'April Week 1',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week1Base({
+            trailingQuestions: [questionBuilder.text('What is your biggest goal right now?')]
+          })
+        },
+        2: {
+          title: 'April Week 2',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week2Base({
+            trailingQuestions: [questionBuilder.text('Do you suffer with burnout, overthinking, or any other mentality issue that prevents you from reaching your goals that you need life coaching help with?')]
+          })
+        },
+        3: {
+          title: 'April Week 3',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week3Base({
+            trailingQuestions: [questionBuilder.scale('How strongly do you feel about this statement: (1-10) I feel confident that fitness is a true part of my life, I could take a few days off and know I would come back to workout again without falling off.')] 
+          })
+        },
+        4: {
+          title: 'April Week 4',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week4Base({
+            beforeFinalQuestions: [questionBuilder.text('What challenge are you conquering this week, no matter how small?')]
+          })
+        }
+      },
+      may: {
+        1: {
+          title: 'May Week 1',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week1Base({
+            trailingQuestions: [questionBuilder.text('Take a paragraph or two to remind yourself of your ultimate life goal.')]
+          })
+        },
+        2: {
+          title: 'May Week 2',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week2Base({
+            trailingQuestions: [questionBuilder.text('Is there anything this program can do to meet your needs better?')]
+          })
+        },
+        3: {
+          title: 'May Week 3',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week3Base({
+            trailingQuestions: [questionBuilder.scale('I have a passion for fitness and genuinely enjoy it (1-10)', 'may_week3_fitness_passion')]
+          })
+        },
+        4: {
+          title: 'May Week 4',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week4Base({
+            beforeFinalQuestions: [questionBuilder.text('Do you feel the program you currently have is simple to stick to, okay for you mentally, and has left you with a clear direction for the next few months?')]
+          })
+        }
+      },
+      june: {
+        1: {
+          title: 'June Week 1',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week1Base({
+            trailingQuestions: [questionBuilder.scale('I genuinely feel like a strong, high achieving person who takes the necessary steps to stick to my goals (rate this statement 1-10)', 'june_week1_statement')]
+          })
+        },
+        2: {
+          title: 'June Week 2',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week2Base({
+            trailingQuestions: [questionBuilder.text('Is there anything you’re not doing to achieve your goals that you feel you should be doing?')]
+          })
+        },
+        3: {
+          title: 'June Week 3',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week3Base({
+            trailingQuestions: [questionBuilder.text('Am I doing the extra work required outside of fitness to achieve greatness? (For example reading self help books / looking after my mental health / researching what I need to do to achieve my life goals / being a good family member)')]
+          })
+        },
+        4: {
+          title: 'June Week 4',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week4Base({
+            beforeFinalQuestions: [questionBuilder.text('What does success look like to you in the next 3 months?')]
+          })
+        }
+      },
+      july: {
+        1: {
+          title: 'July Week 1',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week1Base({
+            trailingQuestions: [questionBuilder.text('Would you change anything about your program?')]
+          })
+        },
+        2: {
+          title: 'July Week 2',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week2Base({
+            trailingQuestions: [questionBuilder.scale('Rate this statement from 1 - 10 about yourself: I love breaking through barriers. When I see a barrier that gets in the way of a key life goal, I feel motivated to break through that barrier, instead of shying away from it. (1-10)', 'july_week2_barrier_statement')]
+          })
+        },
+        3: {
+          title: 'July Week 3',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week3Base({
+            trailingQuestions: [questionBuilder.text('Is there anyway you can challenge yourself to achieve more that you aren’t currently doing?')]
+          })
+        },
+        4: {
+          title: 'July Week 4',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week4Base({
+            beforeFinalQuestions: [questionBuilder.text('Share 3 wins or reasons why you are proud of yourself')]
+          })
+        }
+      },
+      august: {
+        1: {
+          title: 'August Week 1',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week1Base({
+            trailingQuestions: [questionBuilder.scaleWithReason('How would you rate your week from 1 to 10 and why?', 'august_week1_rating')]
+          })
+        },
+        2: {
+          title: 'August Week 2',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week2Base({
+            trailingQuestions: [questionBuilder.text('Take a paragraph or two to remind yourself of your ultimate life goal')]
+          })
+        },
+        3: {
+          title: 'August Week 3',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week3Base({
+            trailingQuestions: [questionBuilder.text('What’s one thing you want to work on this week?')],
+            finalQuestion: 'Do you have any questions or concerns for me?'
+          })
+        },
+        4: {
+          title: 'August Week 4',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week4Base({
+            beforeFinalQuestions: [questionBuilder.text('What does success look like to you when it comes to living the best life you can?')]
+          })
+        }
+      },
+      september: {
+        1: {
+          title: 'September Week 1',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week1Base({
+            trailingQuestions: [questionBuilder.text('Do you have anything coming up—events, situations, or goals—where a bit of extra support or coaching could be helpful?')]
+          })
+        },
+        2: {
+          title: 'September Week 2',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week2Base({
+            trailingQuestions: [questionBuilder.text('Do you feel like you have found your purpose when it comes to what you want to achieve in your life or do you need more help with this?')]
+          })
+        },
+        3: {
+          title: 'September Week 3',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week3Base({
+            trailingQuestions: [questionBuilder.text('How does your current program fit alongside your other priorities—like family, work, and personal time?')]
+          })
+        },
+        4: {
+          title: 'September Week 4',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week4Base({
+            beforeFinalQuestions: [questionBuilder.scale('Rate this statement with how much you agree from 1 -10. I am able to stick to my tasks and I am able to hold myself accountable (1-10)', 'september_week4_accountability')]
+          })
+        }
+      },
+      october: {
+        1: {
+          title: 'October Week 1',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week1Base({
+            trailingQuestions: [questionBuilder.text('Name 1 - 3 things you want to work on this week.')]
+          })
+        },
+        2: {
+          title: 'October Week 2',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week2Base()
+        },
+        3: {
+          title: 'October Week 3',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week3Base({
+            trailingQuestions: [questionBuilder.text('How have your aesthetic body goals changed since starting your training cycle? Are you still wanting to focus on the same muscles and training style as before?')]
+          })
+        },
+        4: {
+          title: 'October Week 4',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week4Base({
+            beforeFinalQuestions: [questionBuilder.text('Do you feel like you have found your purpose / definite vision when it comes to what you want to achieve in your life or do you need more help with this?')]
+          })
+        }
+      },
+      november: {
+        1: {
+          title: 'November Week 1',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week1Base({
+            trailingQuestions: [questionBuilder.scale('Rate the following statement out of 10 for how much you agree: I feel like a generally positive person who has clear goals to achieve with my future and my body, and I am in a good mindset towards achieving them (1-10)', 'november_week1_statement')]
+          })
+        },
+        2: {
+          title: 'November Week 2',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week2Base({
+            trailingQuestions: [questionBuilder.text('Share 3 wins or reasons why you are proud of yourself.')]
+          })
+        },
+        3: {
+          title: 'November Week 3',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week3Base({
+            trailingQuestions: [questionBuilder.scaleWithReason('How would you rate your week from 1 to 10 and why?', 'november_week3_rating')]
+          })
+        },
+        4: {
+          title: 'November Week 4',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week4Base({
+            beforeFinalQuestions: [questionBuilder.text('Is there anyway you can challenge yourself to achieve more that you aren’t currently doing?')]
+          })
+        }
+      },
+      december: {
+        1: {
+          title: 'December Week 1',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week1Base({
+            trailingQuestions: [questionBuilder.text('Do you feel the goals you have set for yourself in the next few months are truly the best goals for achieving a life you can look back on and be proud of?')]
+          })
+        },
+        2: {
+          title: 'December Week 2',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week2Base({
+            trailingQuestions: [questionBuilder.text('What does success look like to you in the next 3 months?')]
+          })
+        },
+        3: {
+          title: 'December Week 3',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week3Base({
+            trailingQuestions: [questionBuilder.text('What’s one thing you want to work on this week?')]
+          })
+        },
+        4: {
+          title: 'December Week 4',
+          description: 'Enter your client code first. If it matches the approved list, the rest of your coaching check-in will appear below.',
+          questions: week4Base({
+            beforeFinalQuestions: [questionBuilder.text('Take a paragraph or two to remind yourself of your ultimate life goal')]
+          })
+        }
+      }
+    };
+
+    function slugify(value) {
+      return value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '');
+    }
+
+    function setStatus(element, message, type = '') {
+      element.textContent = message;
+      element.className = 'status' + (type ? ` ${type}` : '');
+    }
+
+    function normalizeCode(value) {
+      return value.trim().toUpperCase();
+    }
+
+    function getDisplayLabel(question) {
+      if (question.variant === 'percent') {
+        return question.label.replace(/\s*\(?percentage\)?\s*$/i, '').trim();
+      }
+
+      return question.label;
+    }
+
+    function applyTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Toggle light mode' : 'Toggle dark mode');
+      themeToggle.setAttribute('title', theme === 'dark' ? 'Toggle light mode' : 'Toggle dark mode');
+      localStorage.setItem(themePreferenceKey, theme);
+    }
+
+    function getStoredTheme() {
+      const storedTheme = localStorage.getItem(themePreferenceKey);
+      if (storedTheme === 'light' || storedTheme === 'dark') {
+        return storedTheme;
+      }
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+
+    function createInputForQuestion(question) {
+      if (question.type === 'textarea') {
+        const textarea = document.createElement('textarea');
+        textarea.id = question.id;
+        textarea.name = question.id;
+        return textarea;
+      }
+
+      if (question.type === 'number') {
+        const numberInput = document.createElement('input');
+        numberInput.type = 'number';
+        numberInput.id = question.id;
+        numberInput.name = question.id;
+        if (typeof question.min === 'number') {
+          numberInput.min = String(question.min);
+        }
+        if (typeof question.max === 'number') {
+          numberInput.max = String(question.max);
+        }
+        if (typeof question.step === 'number') {
+          numberInput.step = String(question.step);
+        }
+        if (question.placeholder) {
+          numberInput.placeholder = question.placeholder;
+        }
+        return numberInput;
+      }
+
+      if (question.type === 'select') {
+        const select = document.createElement('select');
+        select.id = question.id;
+        select.name = question.id;
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = 'Select an option';
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        select.appendChild(placeholder);
+        question.options.forEach((optionText) => {
+          const option = document.createElement('option');
+          option.value = optionText;
+          option.textContent = optionText;
+          select.appendChild(option);
+        });
+        return select;
+      }
+
+      const textInput = document.createElement('input');
+      textInput.type = question.inputType || 'text';
+      textInput.id = question.id;
+      textInput.name = question.id;
+      if (question.placeholder) {
+        textInput.placeholder = question.placeholder;
+      }
+      if (typeof question.min === 'number') {
+        textInput.min = String(question.min);
+      }
+      if (typeof question.max === 'number') {
+        textInput.max = String(question.max);
+      }
+      if (typeof question.step === 'number') {
+        textInput.step = String(question.step);
+      }
+      return textInput;
+    }
+
+    function createChoiceGroup(question) {
+      const wrapper = document.createElement('div');
+      wrapper.className = `choice-group ${question.variant === 'percent' ? 'percent-group' : 'scale-group'}`;
+
+      question.options.forEach((optionText, index) => {
+        const optionId = `${question.id}_${index + 1}`;
+        const pill = document.createElement('label');
+        pill.className = 'choice-pill';
+
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = question.id;
+        input.id = optionId;
+        input.value = optionText;
+
+        input.addEventListener('change', () => {
+          wrapper.querySelectorAll('.choice-pill').forEach((element) => element.classList.remove('is-selected'));
+          pill.classList.add('is-selected');
+        });
+
+        const text = document.createElement('span');
+        text.textContent = optionText;
+
+        pill.appendChild(input);
+        pill.appendChild(text);
+        wrapper.appendChild(pill);
+      });
+
+      return wrapper;
+    }
+
+    function renderField(question) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'field';
+      if (question.type === 'composite') {
+        wrapper.classList.add('full');
+      }
+
+      const label = document.createElement('label');
+      label.setAttribute('for', question.id);
+      label.textContent = getDisplayLabel(question);
+      wrapper.appendChild(label);
+
+      if (question.note) {
+        const note = document.createElement('div');
+        note.className = 'field-note';
+        note.textContent = question.note;
+        wrapper.appendChild(note);
+      }
+
+      if (question.type === 'composite') {
+        const compositeGrid = document.createElement('div');
+        compositeGrid.className = 'composite-grid';
+
+        question.subfields.forEach((subfield) => {
+          const subfieldWrapper = document.createElement('div');
+          subfieldWrapper.className = 'composite-field';
+
+          const subfieldLabel = document.createElement('label');
+          subfieldLabel.setAttribute('for', subfield.id);
+          subfieldLabel.textContent = getDisplayLabel(subfield);
+          subfieldWrapper.appendChild(subfieldLabel);
+
+          if (subfield.type === 'choiceGroup') {
+            subfieldWrapper.appendChild(createChoiceGroup(subfield));
+          } else {
+            const input = createInputForQuestion(subfield);
+            subfieldWrapper.appendChild(input);
+          }
+
+          if (subfield.helperLeft || subfield.helperRight) {
+            const helper = document.createElement('div');
+            helper.className = 'scale-hint';
+            helper.innerHTML = `<span>${subfield.helperLeft || ''}</span><span>${subfield.helperRight || ''}</span>`;
+            subfieldWrapper.appendChild(helper);
+          }
+
+          compositeGrid.appendChild(subfieldWrapper);
+        });
+
+        wrapper.appendChild(compositeGrid);
+        return wrapper;
+      }
+
+      if (question.type === 'choiceGroup') {
+        wrapper.appendChild(createChoiceGroup(question));
+      } else {
+        const input = createInputForQuestion(question);
+        wrapper.appendChild(input);
+      }
+
+      if (question.helperLeft || question.helperRight) {
+        const helper = document.createElement('div');
+        helper.className = 'scale-hint';
+        helper.innerHTML = `<span>${question.helperLeft || ''}</span><span>${question.helperRight || ''}</span>`;
+        wrapper.appendChild(helper);
+      }
+
+      return wrapper;
+    }
+
+    function buildQuestionAnswerPairs(questions, formData, parentLabel = '') {
+      const pairs = [];
+
+      questions.forEach((question) => {
+        const combinedLabel = parentLabel ? `${parentLabel} - ${getDisplayLabel(question)}` : getDisplayLabel(question);
+
+        if (question.type === 'composite') {
+          pairs.push(...buildQuestionAnswerPairs(question.subfields, formData, combinedLabel));
+          return;
+        }
+
+        pairs.push({
+          fieldId: question.id,
+          question: combinedLabel,
+          answer: formData.get(question.id) ?? ''
+        });
+      });
+
+      return pairs;
+    }
+
+    function renderQuestions(questions) {
+      dynamicFields.innerHTML = '';
+
+      const clientCodeField = document.createElement('div');
+      clientCodeField.className = 'field full';
+      clientCodeField.innerHTML = `
+        <label>Client Code</label>
+        <input type="text" value="${approvedCode}" readonly>
+      `;
+      dynamicFields.appendChild(clientCodeField);
+
+      questions.forEach((question) => {
+        dynamicFields.appendChild(renderField(question));
+      });
+
+      checkInForm.classList.remove('hidden');
+    }
+
+    function resolvePageConfig() {
+      const params = new URLSearchParams(window.location.search);
+      const monthKey = (params.get('month') || 'january').toLowerCase();
+      const weekKey = params.get('week') || '1';
+      const monthConfig = checkinContent[monthKey];
+      if (monthConfig && monthConfig[weekKey]) {
+        return {
+          monthKey,
+          weekKey,
+          ...monthConfig[weekKey]
+        };
+      }
+
+      return {
+        monthKey: 'january',
+        weekKey: '1',
+        ...checkinContent.january[1]
+      };
+    }
+
+    async function validateClientCode(code) {
+      if (!GOOGLE_APPS_SCRIPT_URL) {
+        throw new Error('Client validation is not configured.');
+      }
+
+      const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'checkClientCode', code })
+      });
+
+      if (!response.ok) {
+        throw new Error('Unable to validate client code.');
+      }
+
+      const data = await response.json();
+      if (data && typeof data.valid === 'boolean') {
+        return {
+          valid: data.valid,
+          name: typeof data.name === 'string' ? data.name : ''
+        };
+      }
+
+      return { valid: false, name: '' };
+    }
+
+    const pageConfig = resolvePageConfig();
+    pageTitle.textContent = pageConfig.title;
+    pageDescription.textContent = pageConfig.description;
+    applyTheme(getStoredTheme());
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = document.body.getAttribute('data-theme') || 'dark';
+      applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+
+    clientCodeInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        checkCode();
+      }
+    });
+
+    checkCodeButton.addEventListener('click', checkCode);
+
+    async function checkCode() {
+      const code = normalizeCode(clientCodeInput.value);
+      if (!code) {
+        setStatus(codeStatus, 'Please enter your client code first.', 'error');
+        return;
+      }
+
+      checkCodeButton.disabled = true;
+      setStatus(codeStatus, 'Checking code...', '');
+
+      try {
+        const validation = await validateClientCode(code);
+
+        if (!validation.valid) {
+          checkInForm.classList.add('hidden');
+          setStatus(codeStatus, 'Code not found. Please check it and try again.', 'error');
+          return;
+        }
+
+        approvedCode = code;
+        const validClient = { code, name: validation.name || 'client' };
+        window.validClient = validClient;
+        setStatus(codeStatus, `Code accepted. Welcome, ${validClient.name}.`, 'success');
+        renderQuestions(pageConfig.questions);
+        clientCodePanel.querySelector('input').setAttribute('disabled', 'disabled');
+        checkCodeButton.textContent = 'Approved';
+      } catch (error) {
+        setStatus(codeStatus, 'Could not validate the client code. Please try again later.', 'error');
+      } finally {
+        checkCodeButton.disabled = false;
+      }
+    }
+
+    checkInForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(checkInForm);
+      const payload = Object.fromEntries(formData.entries());
+      payload.clientCode = approvedCode;
+      payload.clientName = window.validClient?.name || '';
+      payload.month = pageConfig.monthKey;
+      payload.week = pageConfig.weekKey;
+      payload.questionAnswers = buildQuestionAnswerPairs(pageConfig.questions, formData);
+
+      submitButton.disabled = true;
+      setStatus(formStatus, 'Sending check-in...', '');
+
+      try {
+        if (!GOOGLE_APPS_SCRIPT_URL) {
+          console.log('Check-in payload:', payload);
+          setStatus(formStatus, 'Well done! Check in submitted!', 'success');
+          return;
+        }
+
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error('Check-in submission failed.');
+        }
+
+        setStatus(formStatus, 'Well done! Check in submitted!', 'success');
+        checkInForm.reset();
+      } catch (error) {
+        setStatus(formStatus, 'There was a problem submitting the form. Please try again.', 'error');
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
