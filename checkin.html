@@ -4,6 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AG Check-In</title>
+  <script>
+    (function () {
+      try {
+        const savedTheme = localStorage.getItem('ag-check-in-theme');
+        const theme = savedTheme === 'light' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.style.colorScheme = theme;
+      } catch (error) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.documentElement.style.colorScheme = 'dark';
+      }
+    })();
+  </script>
   <style>
     @font-face {
       font-family: 'Rajdhani';
@@ -1374,7 +1387,7 @@
 
       const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
         body: JSON.stringify({ action: 'checkClientCode', code })
       });
 
@@ -1469,7 +1482,7 @@
         const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'text/plain;charset=UTF-8'
           },
           body: JSON.stringify(payload)
         });
